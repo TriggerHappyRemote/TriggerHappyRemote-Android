@@ -5,4 +5,8 @@
     <string name="tab_2">Advanced</string>
     <string name="tab_3">About</string>
     <string name="fire">Fire</string>
+    <string name="warning">Text View Warning about the device not being plugged in</string>
+	<string name="pressandhold"></string>
+	<string name="stickybutton"></string>
+	<string name="fire_toggle">Toggle the fire mode</string>
 </resources>

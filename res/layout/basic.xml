@@ -2,13 +2,21 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="horizontal" >
+    android:orientation="vertical" >
 
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/fireButton"
         android:layout_width="fill_parent"
         android:layout_height="265dp"
+        android:layout_weight="0.11"
         android:text="@string/fire"
-        android:color="@color/red" />
+        android:textSize="30dp"
+        android:background="@drawable/fire_button" />
+    
+    <ToggleButton
+        android:id="@+id/toggleButton1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/fire_toggle"/>
 
 </LinearLayout>
