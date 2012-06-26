@@ -1,8 +1,8 @@
 package com.triggerhappy.android.common;
 
-import android.content.Intent;
 
-public class HDRShot extends Intent implements ICameraShot {
+
+public class HDRShot extends ICameraShot {
 
 	public int getIcon() {
 		// TODO Auto-generated method stub
@@ -27,6 +27,24 @@ public class HDRShot extends Intent implements ICameraShot {
 	public void setShutterLength() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public ShotStatus getStatus() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public long getDelay() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public String getType() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

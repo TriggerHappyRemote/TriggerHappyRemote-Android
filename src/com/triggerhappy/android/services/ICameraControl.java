@@ -14,6 +14,4 @@ public interface ICameraControl {
 	public void addShot(ICameraShot shot);
 	
 	public void processShots();
-	
-
 }

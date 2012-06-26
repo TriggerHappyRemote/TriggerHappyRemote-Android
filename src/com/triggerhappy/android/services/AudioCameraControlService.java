@@ -1,90 +1,139 @@
 package com.triggerhappy.android.services;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.Timer;
+import java.util.TimerTask;
 
-import com.triggerhappy.android.common.ICameraShot;
-
-import com.triggerhappy.android.R;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
+import android.widget.Toast;
 
-public class AudioCameraControlService extends Service implements ICameraControl{
+import com.triggerhappy.android.R;
+import com.triggerhappy.android.common.ICameraShot;
+
+public class AudioCameraControlService extends Service implements
+		ICameraControl {
 	private MediaPlayer mMediaPlayer;
-	private List<ICameraShot> pendingShots;
+	private Queue<ICameraShot> pendingShots;
+	private AudioManager audioManager;
 	
+	private Timer shotScheduler;
+
 	// Binder given to clients
-    private final IBinder mBinder = new AudioCameraBinder();
+	private final IBinder mBinder = new AudioCameraBinder();
 
-    public class AudioCameraBinder extends Binder {
-    	public AudioCameraControlService getService() {
-            return AudioCameraControlService.this;
-        }
-    }
-
-    @Override
-    public IBinder onBind(Intent intent) {
-    	System.out.println("Service Bound...");
-        return mBinder;
-    }
+	public class AudioCameraBinder extends Binder {
+		public AudioCameraControlService getService() {
+			return AudioCameraControlService.this;
+		}
+	}
 
 	@Override
-	public void onCreate(){
+	public IBinder onBind(Intent intent) {
+		return mBinder;
+	}
+
+	@Override
+	public void onCreate() {
 		super.onCreate();
-    	System.out.println("Service Create...");
-		
-		this.pendingShots = new ArrayList<ICameraShot>();
-		
+		audioManager = (AudioManager) this
+				.getSystemService(Context.AUDIO_SERVICE);
+
+		this.pendingShots = new PriorityQueue<ICameraShot>();
+
 		mMediaPlayer = MediaPlayer.create(this, R.raw.ms1000);
 		mMediaPlayer.setLooping(true);
 	}
-	
+
+	@SuppressWarnings("deprecation")
+	private boolean remoteConnected() {
+		return audioManager.isWiredHeadsetOn();
+	}
+
 	@Override
-	public void onDestroy(){
+	public void onDestroy() {
 		super.onDestroy();
-		
-		if(mMediaPlayer != null){
+		if (mMediaPlayer != null) {
 			mMediaPlayer.release();
 			mMediaPlayer = null;
 		}
-		
-	}	
-	
+
+	}
+
 	public void fireShutter(long shutterDuration) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void closeShutter() {
-		while(mMediaPlayer.isPlaying())
+		while (mMediaPlayer.isPlaying())
 			mMediaPlayer.pause();
 	}
 
 	public void openShutter() {
-		mMediaPlayer.start();
+		if (this.remoteConnected()) {
+			mMediaPlayer.start();
+		} else {
+			Toast.makeText(getApplicationContext(), R.string.warning, Toast.LENGTH_LONG).show();
+		}
 	}
 
 	public void addShot(ICameraShot shot) {
 		this.pendingShots.add(shot);
 	}
+	
+	private TimerTask qProcessTask= new TimerTask(){
+
+		@Override
+		public void run() {
+			processShots();
+		}};
 
 	/**
-	 * This is the function that will take one or more ICamerShot
-	 * Objects and "process" them turning them into 
-	 * the proper combination of sound and silence
+	 * This is the function that will take one or more ICamerShot Objects and
+	 * "process" them turning them into the proper combination of sound and
+	 * silence
 	 * 
 	 * 
 	 */
 	public void processShots() {
-		// TODO Auto-generated method stub
+		ICameraShot currentShot = pendingShots.peek();
+		switch (currentShot.getStatus()) {
+		case SHOT:
+			openShutter();
+			shotScheduler.schedule(qProcessTask, currentShot.getDelay());
+			
+			break;
+
+		case INTERVAL:
+			closeShutter();
+			shotScheduler.schedule(qProcessTask, currentShot.getDelay());
+			
+			break;
+
+		case DONE:
+			ICameraShot isEmpty = pendingShots.poll();
+			
+			if(isEmpty == null){
+				shotScheduler.cancel();
+			}
+			else{
+				shotScheduler.schedule(qProcessTask, 0);
+			}
+			
+			break;
+		
+		
+		default:
+			shotScheduler.cancel();
+			break;
+		}
 		
 	}
-	
-	public boolean isPlaying(){
-		return mMediaPlayer.isPlaying();
-	}
-	
 }

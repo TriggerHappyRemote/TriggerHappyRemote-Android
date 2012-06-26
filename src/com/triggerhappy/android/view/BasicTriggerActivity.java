@@ -23,6 +23,7 @@ public class BasicTriggerActivity extends Activity {
 	private AudioCameraControlService mBoundService;
 	
 	private boolean mIsBound;
+	private boolean isPlaying;
 
 	private ServiceConnection mConnection = new ServiceConnection() {
 	    public void onServiceConnected(ComponentName className, IBinder service) {
@@ -57,16 +58,21 @@ public class BasicTriggerActivity extends Activity {
 					return false;
 				if (toggle.isChecked()) {
 					if (event.getAction() == 0) {
-						if (mBoundService.isPlaying())
+						if (isPlaying){
 							mBoundService.closeShutter();
-						else
+							isPlaying = false;
+						}else{
 							mBoundService.openShutter();
+							isPlaying = true;
+						}
 					}
 				} else {
 					if (event.getAction() == 1) {
 						mBoundService.closeShutter();
+						isPlaying = false;
 					} else if (event.getAction() == 0) {
 						mBoundService.openShutter();
+						isPlaying = true;
 					}
 				}
 				return false;
@@ -79,6 +85,7 @@ public class BasicTriggerActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		
 		mIsBound = false;
+		isPlaying = false;
 		
 		this.doBindService();
 
