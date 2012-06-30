@@ -4,29 +4,15 @@ package com.triggerhappy.android.common;
 
 public class HDRShot extends ICameraShot {
 
+	@Override
+	public String getType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	public int getIcon() {
 		// TODO Auto-generated method stub
 		return 0;
-	}
-
-	public long getInterval() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public long getShutterLength() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public void setInterval() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void setShutterLength() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -39,12 +25,6 @@ public class HDRShot extends ICameraShot {
 	public long getDelay() {
 		// TODO Auto-generated method stub
 		return 0;
-	}
-
-	@Override
-	public String getType() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

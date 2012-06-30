@@ -1,6 +1,5 @@
 package com.triggerhappy.android.view;
 
-import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -14,9 +13,10 @@ import android.widget.Button;
 import android.widget.ToggleButton;
 
 import com.triggerhappy.android.R;
+import com.triggerhappy.android.common.TriggerHappyNavigation;
 import com.triggerhappy.android.services.AudioCameraControlService;
 
-public class BasicTriggerActivity extends Activity {
+public class BasicTriggerActivity extends TriggerHappyNavigation {
 
 	private ToggleButton toggle;
 
@@ -95,6 +95,8 @@ public class BasicTriggerActivity extends Activity {
 		primaryFire.setOnTouchListener(this.OnTouchListener());
 
 		toggle = (ToggleButton) findViewById(R.id.toggleButton1);
+		
+		this.initNavigation(3);
 	}
 
 	protected void onDestroy() {

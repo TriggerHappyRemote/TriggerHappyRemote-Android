@@ -6,11 +6,13 @@ public abstract class ICameraShot {
 	private long shutterLength;
 	private long intervalLength;
 	private long duration;
+	private ShotStatus currentStatus;
 	
 	public ICameraShot(){
 		this.shutterLength = 0;
 		this.intervalLength = 0;
 		this.duration = 0;
+		this.currentStatus = ShotStatus.INTERVAL;
 	}
 	
 	/**
@@ -30,8 +32,10 @@ public abstract class ICameraShot {
 	public abstract String getType();
 	
 	/**
+	 * Returns the objects current settings
+	 * without modifying any current settings
 	 * 
-	 * @return
+	 * @return the time in milliseconds
 	 */
 	public long getInterval(){
 		return this.intervalLength;
@@ -47,10 +51,37 @@ public abstract class ICameraShot {
 	
 	/**
 	 * 
+	 * @param milliseconds
+	 */
+	public void setDuration(long milliseconds){
+		this.duration = milliseconds;
+	}
+	
+	/**
+	 * 
+	 * @param hour
+	 * @param minute
+	 * @param second
+	 * @param millisecond
+	 */
+	public void setDuration(int hour, int minute, int second, long millisecond){
+		this.duration = toMillisecond(hour, minute, second, millisecond);		
+	}
+	
+	/**
+	 * 
 	 * @return
 	 */
 	public long getDuration(){
 		return this.duration;
+	}
+	
+	/**
+	 * 
+	 * @param milliseconds
+	 */
+	public void setInterval(long milliseconds){
+		this.intervalLength = milliseconds;
 	}
 	
 	/**
@@ -61,6 +92,14 @@ public abstract class ICameraShot {
 	 */
 	public void setInterval(int hour, int minute, int second, long millisecond){
 		this.intervalLength = toMillisecond(hour, minute, second, millisecond);
+	}
+	
+	/**
+	 * 
+	 * @param milliseconds
+	 */
+	public void setShutterLength(long milliseconds){
+		this.shutterLength = milliseconds;
 	}
 	
 	/**
@@ -86,7 +125,13 @@ public abstract class ICameraShot {
 	 * 			INTERVAL - Getting ready to wait for the next shot, 
 	 * 			SHOT - Getting ready to take a shot
 	 */
-	public abstract ShotStatus getStatus();
+	public ShotStatus getStatus(){
+		return this.currentStatus;
+	}
+	
+	protected void setStatus(ShotStatus newStatus){
+		this.currentStatus = newStatus;
+	}
 	
 	/**
 	 * Method that returns the next interval 

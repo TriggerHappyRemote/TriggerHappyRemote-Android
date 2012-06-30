@@ -8,6 +8,10 @@
 package com.actionbarsherlock;
 
 public final class R {
+    public static final class array {
+        public static final int Progression=0x7f0c0001;
+        public static final int locations=0x7f0c0000;
+    }
     public static final class attr {
         /**  Specified if we are forcing an action item overflow menu. 
          <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
@@ -974,6 +978,7 @@ containing a value of this type.
         public static final int warning=0x7f02005c;
     }
     public static final class id {
+        public static final int Button01=0x7f050030;
         public static final int abs__action_bar=0x7f050022;
         public static final int abs__action_bar_container=0x7f050021;
         public static final int abs__action_bar_subtitle=0x7f050011;
@@ -1006,6 +1011,7 @@ containing a value of this type.
         public static final int button1=0x7f050029;
         public static final int button2=0x7f050027;
         public static final int button3=0x7f05002a;
+        public static final int button4=0x7f050034;
         public static final int disableHome=0x7f050009;
         public static final int fireButton=0x7f05002e;
         public static final int homeAsUp=0x7f050006;
@@ -1018,8 +1024,10 @@ containing a value of this type.
         public static final int showCustom=0x7f050008;
         public static final int showHome=0x7f050005;
         public static final int showTitle=0x7f050007;
+        public static final int spinner1=0x7f050031;
+        public static final int start_button=0x7f050032;
         public static final int tabMode=0x7f050003;
-        public static final int text=0x7f050030;
+        public static final int text=0x7f050033;
         public static final int toggleButton1=0x7f05002f;
         public static final int useLogo=0x7f050004;
         public static final int wrap_content=0x7f050000;
@@ -1051,10 +1059,13 @@ containing a value of this type.
         public static final int abs__screen_simple_overlay_action_mode=0x7f030014;
         public static final int advanced=0x7f030015;
         public static final int basic=0x7f030016;
-        public static final int main=0x7f030017;
-        public static final int sherlock_spinner_dropdown_item=0x7f030018;
-        public static final int sherlock_spinner_item=0x7f030019;
-        public static final int test=0x7f03001a;
+        public static final int bramp=0x7f030017;
+        public static final int hdr=0x7f030018;
+        public static final int interval=0x7f030019;
+        public static final int main=0x7f03001a;
+        public static final int sherlock_spinner_dropdown_item=0x7f03001b;
+        public static final int sherlock_spinner_item=0x7f03001c;
+        public static final int test=0x7f03001d;
     }
     public static final class raw {
         public static final int ms033=0x7f040000;

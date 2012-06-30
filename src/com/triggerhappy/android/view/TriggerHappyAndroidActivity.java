@@ -1,40 +1,18 @@
 package com.triggerhappy.android.view;
 
-import com.triggerhappy.android.R;
-import android.app.TabActivity;
-import android.content.Intent;
 import android.os.Bundle;
-import android.widget.TabHost;
 
-public class TriggerHappyAndroidActivity extends TabActivity {
+import com.triggerhappy.android.R;
+import com.triggerhappy.android.common.TriggerHappyNavigation;
+
+public class TriggerHappyAndroidActivity extends TriggerHappyNavigation{
 	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
-	    setContentView(R.layout.main);
+	    setContentView(R.layout.interval);
 	    
-	    TabHost tabHost = getTabHost();
-	    TabHost.TabSpec spec;
-	    Intent intent;
-	    
-	    intent = new Intent().setClass(this, BasicTriggerActivity.class);
-	    
-	    spec = tabHost.newTabSpec("basic").setIndicator("Basic").setContent(intent);
-	    
-	    tabHost.addTab(spec);
-	    
-	    intent = new Intent().setClass(this, AdvancedTriggerActivity.class);
-	    
-	    spec = tabHost.newTabSpec("advanced").setIndicator("Advanced").setContent(intent);
-	    
-	    tabHost.addTab(spec);
-	    
-	    intent = new Intent().setClass(this, AboutTriggerHappyActvity.class);
-	    
-	    spec = tabHost.newTabSpec("about").setIndicator("About").setContent(intent);
-	    
-	    tabHost.addTab(spec);
+	    this.initNavigation(0);
     }
-    
 }

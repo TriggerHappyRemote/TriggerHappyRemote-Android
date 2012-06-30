@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="locations">
+        <item>Interval Shot</item>
+        <item>Bulb Ramping</item>
+        <item>HDR</item>
+        <item>Push to shoot</item>
+    </string-array>
+    <string-array name="Progression">
+        <item>Please Select a Progression</item>
+        <item>Linear Progression</item>
+        </string-array>
+</resources>
