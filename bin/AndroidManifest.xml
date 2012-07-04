@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.triggerhappy.android"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="15"/>
+
+    <application
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/Theme.Sherlock" >
+        <activity
+            android:name=".view.TriggerHappyAndroidActivity"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".view.BasicTriggerActivity" >
+        </activity>
+        <activity
+            android:name=".view.AdvancedTriggerActivity" >
+        </activity>
+        <service android:name=".services.AudioCameraControlService"></service>
+        <activity android:name=".view.HDRTriggerHappyActivity"></activity>
+    </application>
+
+</manifest>

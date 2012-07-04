@@ -3,6 +3,9 @@ package com.triggerhappy.android.common;
 public abstract class ICameraShot {
 	
 	public enum ShotStatus {DONE, INTERVAL, SHOT};
+	
+	protected long elapsedTime;
+	
 	private long shutterLength;
 	private long intervalLength;
 	private long duration;
@@ -13,6 +16,7 @@ public abstract class ICameraShot {
 		this.intervalLength = 0;
 		this.duration = 0;
 		this.currentStatus = ShotStatus.INTERVAL;
+		this.elapsedTime = 0;
 	}
 	
 	/**
@@ -42,10 +46,21 @@ public abstract class ICameraShot {
 	}
 	
 	/**
+	 * Safe to call does not modify anything
 	 * 
 	 * @return
 	 */
 	public long getShutterLength(){
+		return this.shutterLength;
+	}
+	
+	/**
+	 * May modify underlying values only call
+	 * if you know what you are doing!
+	 * 
+	 * @return
+	 */
+	protected long calculateShutterLength(){
 		return this.shutterLength;
 	}
 	
@@ -65,7 +80,7 @@ public abstract class ICameraShot {
 	 * @param millisecond
 	 */
 	public void setDuration(int hour, int minute, int second, long millisecond){
-		this.duration = toMillisecond(hour, minute, second, millisecond);		
+		this.duration = TimeUtils.toMillisecond(hour, minute, second, millisecond);		
 	}
 	
 	/**
@@ -91,7 +106,7 @@ public abstract class ICameraShot {
 	 * @param second
 	 */
 	public void setInterval(int hour, int minute, int second, long millisecond){
-		this.intervalLength = toMillisecond(hour, minute, second, millisecond);
+		this.intervalLength = TimeUtils.toMillisecond(hour, minute, second, millisecond);
 	}
 	
 	/**
@@ -112,12 +127,9 @@ public abstract class ICameraShot {
 	 * @param milisecond - can be zero or more
 	 */
 	public void setShutterLength(int hour, int minute, int second, long millisecond){
-		this.shutterLength = toMillisecond(hour, minute, second, millisecond);
+		this.shutterLength = TimeUtils.toMillisecond(hour, minute, second, millisecond);
 	}
-	
-	private long toMillisecond(int hour, int minute, int second, long millisecond){
-		return millisecond + second * 1000 + minute * 60000 + hour * 3600000;
-	}
+		
 	/**
 	 * Returns the current state of the shot 
 	 * 
@@ -143,5 +155,54 @@ public abstract class ICameraShot {
 	 * 
 	 * @return the delay in milliseconds for the current status
 	 */
-	public abstract long getDelay();
+	public long getDelay() {
+		long delay = 0;
+		long reduction = 0;
+
+		switch (this.getStatus()) {
+			case SHOT: {
+				long shutterLength = this.calculateShutterLength();
+				this.elapsedTime += shutterLength;
+				delay = shutterLength;
+				
+				reduction = this.toggleStatus();
+				break;
+			}
+	
+			case INTERVAL: {
+				this.elapsedTime += this.getInterval();
+				delay = this.getInterval();
+				
+				reduction = this.toggleStatus();
+				break;
+			}
+			
+			default: {// DONE status
+				break;
+			}
+		}
+		return delay - reduction;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	protected long toggleStatus(){
+		long result = 0;
+		if (this.elapsedTime == this.getDuration()){
+			this.setStatus(ShotStatus.DONE);
+		}else if(this.elapsedTime > this.getDuration()){
+			result = this.elapsedTime - this.getDuration();
+			this.setStatus(ShotStatus.DONE);
+		}else if(this.getStatus() == ShotStatus.INTERVAL){
+			this.setStatus(ShotStatus.SHOT);
+		}else if(this.getStatus() == ShotStatus.SHOT){
+			this.setStatus(ShotStatus.INTERVAL);
+		}else{
+			// #TODO Error!!!
+		}
+		
+		return result;
+	}
 }
