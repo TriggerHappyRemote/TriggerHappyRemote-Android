@@ -7,6 +7,7 @@
     android:padding="20dip" >
 
     <TextView
+        android:id="@+id/intervalLength_display"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
@@ -16,14 +17,14 @@
 
 
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/intervalLength_button"
         style="?android:attr/buttonStyleSmall"
         android:layout_width="270dp"
         android:layout_height="wrap_content"
         android:text="Interval Length" />
 
-
     <TextView
+        android:id="@+id/shutterLength_display"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
@@ -34,13 +35,14 @@
 
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/shutterLength_button"
         style="?android:attr/buttonStyleSmall"
         android:layout_width="270dp"
         android:layout_height="wrap_content"
         android:text="Shutter Length" />
 
     <TextView
+        android:id="@+id/durationLength_display"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
@@ -52,14 +54,14 @@
 
 
     <Button
-        android:id="@+id/button4"
+        android:id="@+id/duration_button"
         style="?android:attr/buttonStyleSmall"
         android:layout_width="270dp"
         android:layout_height="wrap_content"
         android:text="Duration" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/startInterval_button"
         style="?android:attr/buttonStyleSmall"
         android:layout_width="270dp"
         android:layout_height="wrap_content"

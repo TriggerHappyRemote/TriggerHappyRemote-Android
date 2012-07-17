@@ -9,4 +9,7 @@
 	<string name="pressandhold"></string>
 	<string name="stickybutton"></string>
 	<string name="fire_toggle">Toggle the fire mode</string>
+	<string name="alert_dialog_ok">OK</string>
+	<string name="alert_dialog_cancel">Cancel</string>
+	<string name="about">Here is the awesome information about the triggerhappy camera remote</string>
 </resources>

@@ -80,8 +80,8 @@ public class HDRShot extends ICameraShot {
 		shots.add(new HDRShotInfo((long)(this.getShutterLength())));
 		
 		for(int i = 0; i < this.numberOfShots / 2; i++){
-			shots.add(new HDRShotInfo((long)(this.getShutterLength() * Math.pow(2, this.evInterval * -1))));
-			shots.add(new HDRShotInfo((long)(this.getShutterLength() * Math.pow(2, this.evInterval))));
+			shots.add(new HDRShotInfo((long)(this.getShutterLength() * Math.pow(2, this.evInterval * -1 * i))));
+			shots.add(new HDRShotInfo((long)(this.getShutterLength() * Math.pow(2, this.evInterval * i))));
 		}
 	}
 

@@ -19,6 +19,10 @@ public abstract class ICameraShot {
 		this.elapsedTime = 0;
 	}
 	
+	public String toString(){
+		return "duration: " + duration;
+	}
+	
 	/**
 	 * Returns the id of the Icon for this 
 	 * shot for display in a list

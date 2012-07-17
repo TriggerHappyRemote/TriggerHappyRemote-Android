@@ -1,77 +1,176 @@
 package com.triggerhappy.android.common;
 
 import android.app.ActionBar;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
+import android.os.IBinder;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar.OnNavigationListener;
-import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.triggerhappy.android.R;
-import com.triggerhappy.android.view.AdvancedTriggerActivity;
+import com.triggerhappy.android.services.AudioCameraControlService;
+import com.triggerhappy.android.view.AboutTriggerHappyActvity;
 import com.triggerhappy.android.view.BasicTriggerActivity;
+import com.triggerhappy.android.view.BulbRampingTriggerActivity;
 import com.triggerhappy.android.view.HDRTriggerHappyActivity;
 import com.triggerhappy.android.view.TriggerHappyAndroidActivity;
 
-public class TriggerHappyNavigation extends SherlockActivity implements OnNavigationListener {
+public class TriggerHappyNavigation extends SherlockFragmentActivity implements
+		OnNavigationListener{
 	private boolean setNavigation;
-	
+	protected static final int TIME_SELECTOR = 0;
+	protected AudioCameraControlService mBoundService;
+
+	protected boolean mIsBound;
+
+	protected ServiceConnection mConnection = new ServiceConnection() {
+	    public void onServiceConnected(ComponentName className, IBinder service) {
+	        mBoundService = ((AudioCameraControlService.AudioCameraBinder)service).getService();
+	    }
+
+	    public void onServiceDisconnected(ComponentName className) {
+	        mBoundService = null;
+	    }
+	};
+
+	protected void doBindService() {
+	    getApplicationContext().bindService(new Intent(this, 
+	            AudioCameraControlService.class), mConnection, Context.BIND_AUTO_CREATE);
+	    mIsBound = true;
+	}
+
+	protected void doUnbindService() {
+	    if (mIsBound) {
+	        // Detach our existing connection.
+	        getApplicationContext().unbindService(mConnection);
+	        mIsBound = false;
+	    }
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+
+		MenuInflater inflater = getSupportMenuInflater();
+		inflater.inflate(R.menu.main_nav, menu);
+		return true;
+		// menu.add("About")
+		// .setIntent(new Intent(this, AboutTriggerHappyActvity.class))
+		// .setIcon(R.drawable.about_icon)
+		// .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		//
+		// menu.add("Search")
+		// .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM |
+		// MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+		//
+		// return true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case R.id.menu_about: {
+				Intent intent = new Intent(this, AboutTriggerHappyActvity.class);
+				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivity(intent);
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * Function to initialize the drop down navigation menu
 	 * 
 	 * @param pos - the position of the currently active nav item
 	 */
-	protected void initNavigation(int pos){
+	protected void initNavigation(int pos) {
 		setNavigation = true;
-        Context context = getSupportActionBar().getThemedContext();
-        ArrayAdapter<CharSequence> list = ArrayAdapter.createFromResource(context, R.array.locations, R.layout.sherlock_spinner_item);
-        list.setDropDownViewResource(R.layout.sherlock_spinner_dropdown_item);
-        
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        
-        getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-        getSupportActionBar().setListNavigationCallbacks(list, this);
-        getSupportActionBar().setSelectedNavigationItem(pos);
+		Context context = getSupportActionBar().getThemedContext();
+		ArrayAdapter<CharSequence> list = ArrayAdapter.createFromResource(
+				context, R.array.locations, R.layout.sherlock_spinner_item);
+		list.setDropDownViewResource(R.layout.sherlock_spinner_dropdown_item);
+
+		getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+		getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+		getSupportActionBar().setListNavigationCallbacks(list, this);
+		getSupportActionBar().setSelectedNavigationItem(pos);
 	}
-	
+
 	/**
 	 * 
 	 */
 	@Override
 	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
-		if(this.setNavigation){
+		if (this.setNavigation) {
 			this.setNavigation = false;
 			return false;
 		}
 		Intent intent;
-		switch(itemPosition)
-		{
-			case 0:
-			{
+		switch (itemPosition) {
+			case 0: {
 				intent = new Intent(this, TriggerHappyAndroidActivity.class);
-				break;
-			}
-			case 1:
-			{
-				intent = new Intent(this, AdvancedTriggerActivity.class);
 				startActivity(intent);
 				break;
 			}
-			case 2:
-			{
+			case 1: {
+				intent = new Intent(this, BulbRampingTriggerActivity.class);
+				startActivity(intent);
+				break;
+			}
+			case 2: {
 				intent = new Intent(this, HDRTriggerHappyActivity.class);
 				startActivity(intent);
 				break;
 			}
-			case 3:
-			{
+			case 3: {
 				intent = new Intent(this, BasicTriggerActivity.class);
 				startActivity(intent);
 				break;
 			}
 		}
-		
-		// TODO Auto-generated method stub
 		return false;
-	}    
+	}
+
+    public void onFinishEditDialog(String inputText) {
+        Toast.makeText(this, "Hi, " + inputText, Toast.LENGTH_SHORT).show();
+    }
+	
+	protected void renderTimeDisplay(int id, TimerSettings timer){
+		TextView v = (TextView)findViewById(id);
+		
+		String result = "";
+		boolean second = false;
+		
+		result += timer.getHour() + " h: ";
+		result += timer.getMinute() + " m: ";
+		
+		if(timer.getSeconds() != 0){
+			result += timer.getSeconds() + " ";
+			second = true;
+		}
+		
+		if(timer.getSubSeconds() != 0){
+			result += timer.getSubSecondString();
+			second = true;
+		}
+		
+		if(!second)
+			result += 0;
+		
+		result += " s";
+		
+		v.setText(result);
+	}
 }

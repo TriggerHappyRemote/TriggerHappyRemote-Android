@@ -42,12 +42,14 @@ public class AudioCameraControlService extends Service implements
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		
+		shotScheduler = new Timer();
 		audioManager = (AudioManager) this
 				.getSystemService(Context.AUDIO_SERVICE);
 
 		this.pendingShots = new PriorityQueue<ICameraShot>();
 
-		mMediaPlayer = MediaPlayer.create(this, R.raw.ms1000);
+		mMediaPlayer = MediaPlayer.create(this, R.raw.test);
 		mMediaPlayer.setLooping(true);
 	}
 
@@ -77,24 +79,23 @@ public class AudioCameraControlService extends Service implements
 	}
 
 	public void openShutter() {
-		if (this.remoteConnected()) {
+//		if (this.remoteConnected()) {
 			mMediaPlayer.start();
-		} else {
-			Toast.makeText(getApplicationContext(), R.string.warning, Toast.LENGTH_LONG).show();
-		}
+//		} else {
+//			Toast.makeText(getApplicationContext(), R.string.warning, Toast.LENGTH_LONG).show();
+//		}
 	}
 
 	public void addShot(ICameraShot shot) {
 		this.pendingShots.add(shot);
 	}
 	
-	private TimerTask qProcessTask= new TimerTask(){
-
+	private class qProcessTask extends  TimerTask {
 		@Override
 		public void run() {
 			processShots();
-		}};
-
+		}
+	}
 	/**
 	 * This is the function that will take one or more ICamerShot Objects and
 	 * "process" them turning them into the proper combination of sound and
@@ -107,24 +108,24 @@ public class AudioCameraControlService extends Service implements
 		switch (currentShot.getStatus()) {
 		case SHOT:
 			openShutter();
-			shotScheduler.schedule(qProcessTask, currentShot.getDelay());
-			
+			shotScheduler.schedule(new qProcessTask(), currentShot.getDelay());
 			break;
 
 		case INTERVAL:
 			closeShutter();
-			shotScheduler.schedule(qProcessTask, currentShot.getDelay());
+			shotScheduler.schedule(new qProcessTask(), currentShot.getDelay());
 			
 			break;
 
 		case DONE:
 			ICameraShot isEmpty = pendingShots.poll();
+			closeShutter();
 			
 			if(isEmpty == null){
 				shotScheduler.cancel();
 			}
 			else{
-				shotScheduler.schedule(qProcessTask, 0);
+				shotScheduler.schedule(new qProcessTask(), 0);
 			}
 			
 			break;
