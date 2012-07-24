@@ -1,32 +1,57 @@
 package com.triggerhappy.android.view;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.triggerhappy.android.R;
+import com.triggerhappy.android.common.BulbRampingShot;
+import com.triggerhappy.android.common.HDRShot;
 import com.triggerhappy.android.common.TimerSettings;
 import com.triggerhappy.android.common.TriggerHappyNavigation;
+import com.triggerhappy.android.controller.HDRView;
 
 public class HDRTriggerHappyActivity extends TriggerHappyNavigation{
 	private TimerSettings shutterSettings;
+	private double evInterval;
+	private int noOfShots;
 
 	final private int SHUTTER_LENGTH = 0;
 	final private int EXPOSURE_INTERVAL = 1;
 	final private int NUMBER_OF_SHOTS = 2;
 	
-    /** Called when the activity is first created. */
+	final CharSequence[] shotOptions = {"3", "5", "7", "9"};
+	final CharSequence[] exposureInterval = {"3", "5", "7", "9"};
+
+	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
 	    setContentView(R.layout.hdr);
 	    
+	    doBindService();
+	    
 	    this.initNavigation(2);
 	    
+	    this.evInterval = .33;
+	    this.noOfShots = 3;
+	    
 	    Button btn = (Button)findViewById(R.id.hdr_base);
+	    btn.setOnTouchListener(OnTouchListener());
+
+	    
+	    btn = (Button)findViewById(R.id.hdr_num);
+	    btn.setOnTouchListener(OnTouchListener());
+	    
+	    btn = (Button)findViewById(R.id.hdr_exp);
 	    btn.setOnTouchListener(OnTouchListener());
     }
 
@@ -51,6 +76,39 @@ public class HDRTriggerHappyActivity extends TriggerHappyNavigation{
 							startActivityForResult(intent, SHUTTER_LENGTH);
 							break;
 						}
+						
+						case R.id.hdr_num:
+						{
+							AlertDialog.Builder builder = new AlertDialog.Builder(HDRTriggerHappyActivity.this);
+							builder.setTitle("Number of Shots");
+							builder.setItems(shotOptions, new DialogInterface.OnClickListener() {
+							    public void onClick(DialogInterface dialog, int item) {
+							    	HDRView v = (HDRView)findViewById(R.id.HDR_ViewFinder);
+							    	v.setNoOfShots(Integer.parseInt((String) shotOptions[item]));
+							        noOfShots = Integer.parseInt((String) shotOptions[item]);
+							    	Toast.makeText(getApplicationContext(), shotOptions[item], Toast.LENGTH_SHORT).show();
+							    }
+							});
+							AlertDialog alert = builder.create();
+							alert.show();
+							break;
+						}
+						
+						case R.id.hdr_exp:
+						{
+
+							AlertDialog.Builder builder = new AlertDialog.Builder(HDRTriggerHappyActivity.this);
+							builder.setTitle("Number of Shots");
+							builder.setItems(exposureInterval, new DialogInterface.OnClickListener() {
+							    public void onClick(DialogInterface dialog, int item) {
+									HDRView v = (HDRView) findViewById(R.id.HDR_ViewFinder);
+									v.setExposureInterval(Double.parseDouble((String) exposureInterval[item]));
+									evInterval = Double.parseDouble((String) exposureInterval[item]);							    }
+							});
+							AlertDialog alert = builder.create();
+							alert.show();
+							break;
+						}
 					}
 				}
 				return false;
@@ -68,15 +126,50 @@ public class HDRTriggerHappyActivity extends TriggerHappyNavigation{
 			
 			if(requestCode == SHUTTER_LENGTH){
 				shutterSettings = timer;
-				renderTimeDisplay(R.id.brampInterval_display, timer);
+				renderTimeDisplay(R.id.HDR_ViewFinder, timer);
 			}
 		}
 	}
 	
+	protected void renderTimeDisplay(int id, TimerSettings timer) {
+		HDRView v = (HDRView) findViewById(id);
+
+		String result = "";
+		boolean second = false;
+
+		result += (timer.getHour() < 10) ? "0" + timer.getHour() + ":" : timer.getHour() + ":";
+		result += (timer.getMinute() < 10) ? "0" + timer.getMinute() + ":" : timer.getMinute() + ":";
+
+		if (timer.getSeconds() != 0) {
+			result += (timer.getSeconds() < 10) ? "0" + timer.getSeconds() : timer.getSeconds();
+			second = true;
+		}
+
+		if (timer.getSubSeconds() != 0) {
+			result += " " + timer.getSubSecondString();
+			second = true;
+		}else if(!second){
+			result += 0;
+		}
+
+		if (!second)
+			result += 0;
+
+		v.setShutterLength(result);
+	}
 	
-	@Override
+    @Override
 	protected void startProcessing() {
-		// TODO Auto-generated method stub
-		
+    	if(this.evInterval > 0 && this.noOfShots > 0 && this.shutterSettings != null){
+			HDRShot shoot = new HDRShot();
+			
+			shoot.setEVInterval(this.evInterval);
+			shoot.setShutterLength((int)shutterSettings.getHour(), (int)shutterSettings.getMinute(), (int)shutterSettings.getSeconds(), shutterSettings.getSubSeconds());
+			shoot.setNumberOfShots(noOfShots);
+			
+			mBoundService.addShot(shoot);
+			
+			mBoundService.startProcessing();
+    	}
 	}
 }

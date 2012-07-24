@@ -164,7 +164,7 @@ public class BulbRampingTriggerActivity extends TriggerHappyNavigation{
 				
 				mBoundService.addShot(shoot);
 				
-				mBoundService.processShots();
+				mBoundService.startProcessing();
 				
 		}
 	}

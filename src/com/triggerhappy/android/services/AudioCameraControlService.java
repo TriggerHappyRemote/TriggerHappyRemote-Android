@@ -126,6 +126,9 @@ public class AudioCameraControlService extends Service implements
 	}
 	
 	public void startProcessing(){
+		if(this.pendingShots.isEmpty())
+			return;
+		
 		Notification note=new Notification(R.drawable.ic_launcher,
                 "Camera Timer Started",
                 System.currentTimeMillis());
@@ -161,21 +164,20 @@ public class AudioCameraControlService extends Service implements
 		switch (currentShot.getStatus()) {
 		case SHOT:
 			openShutter();
+			shotScheduler = new Timer();
 			shotScheduler.schedule(new qProcessTask(), currentShot.getDelay());
 			break;
 
 		case INTERVAL:
 			closeShutter();
-			shotScheduler.schedule(new qProcessTask(), currentShot.getDelay());
 			shotScheduler = new Timer();
+			shotScheduler.schedule(new qProcessTask(), currentShot.getDelay());
 			break;
 
 		case DONE:
 			stopForeground(true);
-//			ICameraShot isEmpty = pendingShots.poll();
 			this.isProcessing = false;
 			closeShutter();
-			pendingShots.clear();
 			processFinished();
 			break;
 		}

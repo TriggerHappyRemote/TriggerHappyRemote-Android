@@ -81,6 +81,12 @@ public class HDRView extends ImageView{
         invalidate();
     }
     
+    public void setExposureInterval(double _evInterval){
+    	this.evInterval = _evInterval;
+        requestLayout();
+        invalidate();
+    }
+    
     private void initHDR(){
     	this.numberOfShots = 3;
     	this.evInterval = .33;

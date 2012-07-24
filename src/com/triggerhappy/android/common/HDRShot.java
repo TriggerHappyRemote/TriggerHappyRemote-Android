@@ -24,12 +24,13 @@ public class HDRShot extends ICameraShot {
 	}
 	
 	private void init(){
-		this.numberOfShots = 0;
+		this.numberOfShots = 3;
 		this.bulb = true;
-		this.evInterval = 0;
+		this.evInterval = 1;
 		this.calculate = true;
 		
 		shots = new LinkedList<HDRShotInfo>();
+		this.calculateShots();
 	}
 
 	@Override
@@ -48,6 +49,7 @@ public class HDRShot extends ICameraShot {
 	 */
 	public void setEVInterval(double _evInterval){
 		this.evInterval = _evInterval;
+		this.calculateShots();
 	}
 	
 	/**
@@ -60,19 +62,42 @@ public class HDRShot extends ICameraShot {
 	
 	public void setNumberOfShots(int _numberOfShots){
 		this.numberOfShots = _numberOfShots;
+		this.calculateShots();
 	}
 
 	@Override
 	public long getDelay() {
-		if(this.calculate){
-			this.calculateShots();
-		}
-		if(!shots.isEmpty())
+		if(this.getStatus() == ShotStatus.INTERVAL){
+			this.toggleStatus();
+			return 1000;
+			
+		}else if(this.getStatus() == ShotStatus.SHOT){
+			this.toggleStatus();
 			return shots.remove(0).getShutterLength();
-		else
+		}else{
 			return 0;
+		}
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
+	protected long toggleStatus(){
+		long result = 0;
+		if (this.shots.isEmpty()){
+			this.setStatus(ShotStatus.DONE);
+		}else if(this.getStatus() == ShotStatus.INTERVAL){
+			this.setStatus(ShotStatus.SHOT);
+		}else if(this.getStatus() == ShotStatus.SHOT){
+			this.setStatus(ShotStatus.INTERVAL);
+		}else{
+			// #TODO Error!!!
+		}
+		
+		return result;
+	}
+
 	/**
 	 * 
 	 */

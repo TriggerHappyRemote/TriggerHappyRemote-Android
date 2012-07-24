@@ -984,6 +984,7 @@ containing a value of this type.
         public static final int warning=0x7f020062;
     }
     public static final class id {
+        public static final int HDR_ViewFinder=0x7f06003c;
         public static final int about_BuyTriggerHappy=0x7f060012;
         public static final int about_CloseWindow=0x7f060013;
         public static final int about_LearnMore=0x7f060011;
@@ -1032,7 +1033,6 @@ containing a value of this type.
         public static final int durationLength_display=0x7f060045;
         public static final int duration_button=0x7f060044;
         public static final int fireButton=0x7f060032;
-        public static final int hDRView1=0x7f06003c;
         public static final int hdr_base=0x7f06003f;
         public static final int hdr_exp=0x7f06003d;
         public static final int hdr_num=0x7f06003e;
