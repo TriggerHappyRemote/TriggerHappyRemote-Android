@@ -23,36 +23,45 @@ import com.triggerhappy.android.view.BulbRampingTriggerActivity;
 import com.triggerhappy.android.view.HDRTriggerHappyActivity;
 import com.triggerhappy.android.view.TriggerHappyAndroidActivity;
 
-public class TriggerHappyNavigation extends SherlockFragmentActivity implements
-		OnNavigationListener{
+public abstract class TriggerHappyNavigation extends SherlockFragmentActivity
+		implements OnNavigationListener, IProcessorListener {
 	private boolean setNavigation;
 	protected static final int TIME_SELECTOR = 0;
 	protected AudioCameraControlService mBoundService;
 
 	protected boolean mIsBound;
+	
+	protected boolean isRunning;
 
 	protected ServiceConnection mConnection = new ServiceConnection() {
-	    public void onServiceConnected(ComponentName className, IBinder service) {
-	        mBoundService = ((AudioCameraControlService.AudioCameraBinder)service).getService();
-	    }
+		public void onServiceConnected(ComponentName className, IBinder service) {
+			mBoundService = ((AudioCameraControlService.AudioCameraBinder) service)
+					.getService();
+			mBoundService.registerListener(TriggerHappyNavigation.this);
+			mIsBound = true;
+		}
 
-	    public void onServiceDisconnected(ComponentName className) {
-	        mBoundService = null;
-	    }
+		public void onServiceDisconnected(ComponentName className) {
+			mBoundService = null;
+		}
 	};
 
 	protected void doBindService() {
-	    getApplicationContext().bindService(new Intent(this, 
-	            AudioCameraControlService.class), mConnection, Context.BIND_AUTO_CREATE);
-	    mIsBound = true;
+		getApplicationContext().bindService(
+				new Intent(this, AudioCameraControlService.class), mConnection,
+				Context.BIND_AUTO_CREATE);
 	}
 
 	protected void doUnbindService() {
-	    if (mIsBound) {
-	        // Detach our existing connection.
-	        getApplicationContext().unbindService(mConnection);
-	        mIsBound = false;
-	    }
+		if (mIsBound) {
+			// Detach our existing connection.
+			getApplicationContext().unbindService(mConnection);
+			mIsBound = false;
+		}
+	}
+
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		 return true;
 	}
 
 	@Override
@@ -61,16 +70,6 @@ public class TriggerHappyNavigation extends SherlockFragmentActivity implements
 		MenuInflater inflater = getSupportMenuInflater();
 		inflater.inflate(R.menu.main_nav, menu);
 		return true;
-		// menu.add("About")
-		// .setIntent(new Intent(this, AboutTriggerHappyActvity.class))
-		// .setIcon(R.drawable.about_icon)
-		// .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-		//
-		// menu.add("Search")
-		// .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM |
-		// MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-		//
-		// return true;
 	}
 
 	/**
@@ -85,6 +84,19 @@ public class TriggerHappyNavigation extends SherlockFragmentActivity implements
 				startActivity(intent);
 				return true;
 			}
+	
+			case R.id.menu_start: {
+				System.out.println("Start the shot");
+				this.isRunning = true;
+				this.startProcessing();
+				return true;
+			}
+			
+			case R.id.menu_stop: {
+				this.isRunning = false;
+				mBoundService.stopShots();
+				return true;
+			}
 		}
 		return false;
 	}
@@ -92,7 +104,8 @@ public class TriggerHappyNavigation extends SherlockFragmentActivity implements
 	/**
 	 * Function to initialize the drop down navigation menu
 	 * 
-	 * @param pos - the position of the currently active nav item
+	 * @param pos
+	 *            - the position of the currently active nav item
 	 */
 	protected void initNavigation(int pos) {
 		setNavigation = true;
@@ -119,58 +132,68 @@ public class TriggerHappyNavigation extends SherlockFragmentActivity implements
 		}
 		Intent intent;
 		switch (itemPosition) {
-			case 0: {
-				intent = new Intent(this, TriggerHappyAndroidActivity.class);
-				startActivity(intent);
-				break;
-			}
-			case 1: {
-				intent = new Intent(this, BulbRampingTriggerActivity.class);
-				startActivity(intent);
-				break;
-			}
-			case 2: {
-				intent = new Intent(this, HDRTriggerHappyActivity.class);
-				startActivity(intent);
-				break;
-			}
-			case 3: {
-				intent = new Intent(this, BasicTriggerActivity.class);
-				startActivity(intent);
-				break;
-			}
+		case 0: {
+			intent = new Intent(this, TriggerHappyAndroidActivity.class);
+			startActivity(intent);
+			break;
+		}
+		case 1: {
+			intent = new Intent(this, BulbRampingTriggerActivity.class);
+			startActivity(intent);
+			break;
+		}
+		case 2: {
+			intent = new Intent(this, HDRTriggerHappyActivity.class);
+			startActivity(intent);
+			break;
+		}
+		case 3: {
+			intent = new Intent(this, BasicTriggerActivity.class);
+			startActivity(intent);
+			break;
+		}
 		}
 		return false;
 	}
 
-    public void onFinishEditDialog(String inputText) {
-        Toast.makeText(this, "Hi, " + inputText, Toast.LENGTH_SHORT).show();
-    }
-	
-	protected void renderTimeDisplay(int id, TimerSettings timer){
-		TextView v = (TextView)findViewById(id);
-		
+	public void onFinishEditDialog(String inputText) {
+		Toast.makeText(this, "Hi, " + inputText, Toast.LENGTH_SHORT).show();
+	}
+
+	protected void renderTimeDisplay(int id, TimerSettings timer) {
+		TextView v = (TextView) findViewById(id);
+
 		String result = "";
 		boolean second = false;
-		
-		result += timer.getHour() + " h: ";
-		result += timer.getMinute() + " m: ";
-		
-		if(timer.getSeconds() != 0){
-			result += timer.getSeconds() + " ";
+
+		result += (timer.getHour() < 10) ? "0" + timer.getHour() + ":" : timer.getHour() + ":";
+		result += (timer.getMinute() < 10) ? "0" + timer.getMinute() + ":" : timer.getMinute() + ":";
+
+		if (timer.getSeconds() != 0) {
+			result += (timer.getSeconds() < 10) ? "0" + timer.getSeconds() : timer.getSeconds();
 			second = true;
 		}
-		
-		if(timer.getSubSeconds() != 0){
-			result += timer.getSubSecondString();
+
+		if (timer.getSubSeconds() != 0) {
+			result += " " + timer.getSubSecondString();
 			second = true;
 		}
-		
-		if(!second)
+
+		if (!second)
 			result += 0;
-		
-		result += " s";
-		
+
+		result += " >";
+
 		v.setText(result);
 	}
+
+	abstract protected void startProcessing();
+
+	public void onProcessorFinish() {
+		this.isRunning = false;
+		System.out.println("Finished Running the Batch");
+		System.out.println(this.isRunning);
+		this.invalidateOptionsMenu();
+	}
+
 }

@@ -69,4 +69,10 @@ public class BasicTriggerActivity extends TriggerHappyNavigation {
 	    super.doUnbindService();
 
 	}
+
+	@Override
+	protected void startProcessing() {
+		// TODO Auto-generated method stub
+		
+	}
 }

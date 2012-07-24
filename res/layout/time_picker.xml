@@ -9,7 +9,8 @@
         android:id="@+id/timePicker_enableSubSeconds"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="ToggleButton" />
+        android:textOff="@+string/setting_subsecond_disabled"
+        android:textOn="@+string/setting_subsecond_enable"/>
 
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -20,7 +21,7 @@
         <Spinner
             android:id="@+id/timePicker_hours"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"/>
 
         <Spinner
             android:id="@+id/timePicker_minutes"
@@ -49,14 +50,14 @@
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Save" />
+            android:text="@+string/dialogue_save" />
 
         <Button
             android:id="@+id/timePicker_CANCEL"
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Cancel" />
+            android:text="@+string/dialogue_cancel" />
     </LinearLayout>
 
 </LinearLayout>

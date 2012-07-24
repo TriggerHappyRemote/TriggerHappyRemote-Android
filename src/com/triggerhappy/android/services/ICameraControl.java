@@ -31,4 +31,9 @@ public interface ICameraControl {
 	 * 
 	 */
 	public void processShots();
+	
+	/**
+	 * 
+	 */
+	public void stopShots();
 }

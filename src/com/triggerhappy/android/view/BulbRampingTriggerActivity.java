@@ -5,12 +5,10 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.Spinner;
+import android.widget.RelativeLayout;
+
 import com.triggerhappy.android.R;
-import com.triggerhappy.android.common.BasicIntervalShot;
-import com.triggerhappy.android.common.ICameraShot;
+import com.triggerhappy.android.common.BulbRampingShot;
 import com.triggerhappy.android.common.TimerSettings;
 import com.triggerhappy.android.common.TriggerHappyNavigation;
 
@@ -18,23 +16,42 @@ public class BulbRampingTriggerActivity extends TriggerHappyNavigation{
 	final private int SHUTTER_LENGTH = 0;
 	final private int INTERVAL_LENGTH = 1;
 	final private int DURATION = 2;
+	final private int FINAL_SHUTTER = 3;
 	
 	private TimerSettings intervalSettings;
 	private TimerSettings shutterSettings;
 	private TimerSettings durationSettings;
+	private TimerSettings finalShutterSettings;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bramp);
-        
-        
-//		Spinner spin = (Spinner) findViewById(R.id.spinner1);
-//		
-//        ArrayAdapter<CharSequence> list = ArrayAdapter.createFromResource(getBaseContext(), R.array.Progression, spin.getId());
-//        list.setDropDownViewResource(spin.getId());
+
+	    intervalSettings = null;
+	    shutterSettings = null;
+	    durationSettings = null;
+	    finalShutterSettings = null;
 
         this.initNavigation(1);
+        
+	    doBindService();
+	    
+	    RelativeLayout lyt = (RelativeLayout)findViewById(R.id.brampDuration_button);
+	    lyt.setBackgroundDrawable(getResources().getDrawable(android.R.drawable.btn_default));
+	    lyt.setOnTouchListener(OnTouchListener());
+	    
+	    lyt = (RelativeLayout)findViewById(R.id.brampInterval_button);
+	    lyt.setBackgroundDrawable(getResources().getDrawable(android.R.drawable.btn_default));
+	    lyt.setOnTouchListener(OnTouchListener());
+	    
+	    lyt = (RelativeLayout)findViewById(R.id.brampShutter_button);
+	    lyt.setBackgroundDrawable(getResources().getDrawable(android.R.drawable.btn_default));
+	    lyt.setOnTouchListener(OnTouchListener());
+	    
+	    lyt = (RelativeLayout)findViewById(R.id.brampFinalShutter_button);
+	    lyt.setBackgroundDrawable(getResources().getDrawable(android.R.drawable.btn_default));
+	    lyt.setOnTouchListener(OnTouchListener());
     }
 	    
 	private OnTouchListener OnTouchListener() {
@@ -45,24 +62,9 @@ public class BulbRampingTriggerActivity extends TriggerHappyNavigation{
 				if(event.getAction() == 1)
 				{
 					switch(v.getId()){
-						case R.id.intervalLength_button:
+						case R.id.brampShutter_button:
 						{
 							Intent intent = new Intent(getBaseContext(), TimePickerTriggerHappyActivity.class);
-							intent.putExtra("Title", "Interval Length");
-							if(intervalSettings != null){
-								intent.putExtra("hours", intervalSettings.getHour());
-								intent.putExtra("minutes", intervalSettings.getMinute());
-								intent.putExtra("seconds", intervalSettings.getSeconds());
-								intent.putExtra("subSeconds", intervalSettings.getSubSeconds());
-							}
-							startActivityForResult(intent, INTERVAL_LENGTH);
-							break;
-						}
-						
-						case R.id.shutterLength_button:
-						{
-							Intent intent = new Intent(getBaseContext(), TimePickerTriggerHappyActivity.class);
-							intent.putExtra("subSecond", true);
 							intent.putExtra("Title", "Shutter Length");
 							if(shutterSettings != null){
 								intent.putExtra("hours", shutterSettings.getHour());
@@ -74,7 +76,37 @@ public class BulbRampingTriggerActivity extends TriggerHappyNavigation{
 							break;
 						}
 						
-						case R.id.duration_button:
+						case R.id.brampInterval_button:
+						{
+							Intent intent = new Intent(getBaseContext(), TimePickerTriggerHappyActivity.class);
+							intent.putExtra("subSecond", true);
+							intent.putExtra("Title", "Interval Length");
+							if(intervalSettings != null){
+								intent.putExtra("hours", intervalSettings.getHour());
+								intent.putExtra("minutes", intervalSettings.getMinute());
+								intent.putExtra("seconds", intervalSettings.getSeconds());
+								intent.putExtra("subSeconds", intervalSettings.getSubSeconds());
+							}
+							startActivityForResult(intent, INTERVAL_LENGTH);
+							break;
+						}
+						
+						case R.id.brampFinalShutter_button:
+						{
+							Intent intent = new Intent(getBaseContext(), TimePickerTriggerHappyActivity.class);
+							intent.putExtra("Title", "Final Shutter Length");
+							if(finalShutterSettings != null){
+								intent.putExtra("hours", finalShutterSettings.getHour());
+								intent.putExtra("minutes", finalShutterSettings.getMinute());
+								intent.putExtra("seconds", finalShutterSettings.getSeconds());
+								intent.putExtra("subSeconds", finalShutterSettings.getSubSeconds());
+
+							}
+							startActivityForResult(intent, FINAL_SHUTTER);
+							break;
+						}
+						
+						case R.id.brampDuration_button:
 						{
 							Intent intent = new Intent(getBaseContext(), TimePickerTriggerHappyActivity.class);
 							intent.putExtra("Title", "Duration Length");
@@ -87,24 +119,7 @@ public class BulbRampingTriggerActivity extends TriggerHappyNavigation{
 							startActivityForResult(intent, DURATION);
 							break;
 						}
-						
-						case R.id.startInterval_button:
-						{
-							// Verify that we have settings for all settings
-							if (intervalSettings != null && shutterSettings != null && durationSettings != null && mIsBound || true){
-									ICameraShot shoot = new BasicIntervalShot();
-									
-									shoot.setDuration((int)durationSettings.getHour(), (int)durationSettings.getMinute(), (int)durationSettings.getSeconds(), durationSettings.getSubSeconds());
-									shoot.setInterval((int)intervalSettings.getHour(), (int)intervalSettings.getMinute(), (int)intervalSettings.getSeconds(), intervalSettings.getSubSeconds());
-									shoot.setShutterLength((int)shutterSettings.getHour(), (int)shutterSettings.getMinute(), (int)shutterSettings.getSeconds(), shutterSettings.getSubSeconds());
-									
-									mBoundService.addShot(shoot);
-									
-									mBoundService.processShots();
-									
-							}
-							
-						}
+
 					}
 				}
 				return false;
@@ -122,14 +137,35 @@ public class BulbRampingTriggerActivity extends TriggerHappyNavigation{
 			
 			if(requestCode == INTERVAL_LENGTH){
 				intervalSettings = timer;
-				renderTimeDisplay(R.id.intervalLength_display, timer);
+				renderTimeDisplay(R.id.brampInterval_display, timer);
 			}else if(requestCode == SHUTTER_LENGTH){
 				shutterSettings = timer;
-				renderTimeDisplay(R.id.shutterLength_display, timer);
+				renderTimeDisplay(R.id.brampShutter_display, timer);
 			}else if(requestCode == DURATION){
 				durationSettings = timer;
-				renderTimeDisplay(R.id.durationLength_display, timer);
+				renderTimeDisplay(R.id.brampDuration_display, timer);
+			}else if (requestCode == FINAL_SHUTTER){
+				finalShutterSettings = timer;
+				renderTimeDisplay(R.id.brampFinalShutter_display, timer);
 			}
+		}
+	}
+
+	@Override
+	protected void startProcessing() {
+		// Verify that we have settings for all settings
+		if (intervalSettings != null && shutterSettings != null && durationSettings != null && finalShutterSettings != null && mIsBound){
+				BulbRampingShot shoot = new BulbRampingShot();
+				
+				shoot.setDuration((int)durationSettings.getHour(), (int)durationSettings.getMinute(), (int)durationSettings.getSeconds(), durationSettings.getSubSeconds());
+				shoot.setInterval((int)intervalSettings.getHour(), (int)intervalSettings.getMinute(), (int)intervalSettings.getSeconds(), intervalSettings.getSubSeconds());
+				shoot.setShutterLength((int)shutterSettings.getHour(), (int)shutterSettings.getMinute(), (int)shutterSettings.getSeconds(), shutterSettings.getSubSeconds());
+				shoot.setFinalShutter((int)finalShutterSettings.getHour(), (int)finalShutterSettings.getMinute(), (int)finalShutterSettings.getSeconds(), finalShutterSettings.getSubSeconds());
+				
+				mBoundService.addShot(shoot);
+				
+				mBoundService.processShots();
+				
 		}
 	}
 }

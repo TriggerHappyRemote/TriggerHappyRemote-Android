@@ -11,5 +11,24 @@
 	<string name="fire_toggle">Toggle the fire mode</string>
 	<string name="alert_dialog_ok">OK</string>
 	<string name="alert_dialog_cancel">Cancel</string>
-	<string name="about">Here is the awesome information about the triggerhappy camera remote</string>
+	<string name="about">Trigger Happy is a remote control for your digital SLR camera. Available for both iOS and Android.</string>
+	<string name="interval_set">Set Interval</string>
+	<string name="shutter_set">Set Shutter Length</string>
+	<string name="description_hdr_view">HDR View Finder</string>
+	<string name="exposure_interval">Exposure Interval</string>
+	<string name="number_of_shots">Number of Shots</string>
+	<string name="base_shutter">Base Shutter</string>
+	<string name="setting_duration">Duration</string>
+	<string name="setting_default">00:00:00 &gt;</string>
+	<string name="setting_interval">Interval</string>
+	<string name="setting_start_shutter">Initial Shutter</string>
+	<string name="setting_final_shutter">Final Shutter</string>
+	<string name="setting_shutter">Shutter Length</string>
+	<string name="setting_subsecond_enable">Subseconds Enabled</string>
+	<string name="setting_subsecond_disabled">Subseconds Disabled</string>
+	<string name="dialogue_save">Save</string>
+	<string name="dialogue_cancel">Cancel</string>
+	<string name="about_learn_more">Learn More</string>
+	<string name="about_get_trigger_happy">Get Trigger Happy</string>
+	<string name="about_close">Close</string>
 </resources>

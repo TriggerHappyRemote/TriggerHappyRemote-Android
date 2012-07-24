@@ -3,7 +3,13 @@
     <!--<item android:id="@+id/menu_enqueue"
           android:icon="@drawable/ic_enqueue"
           android:showAsAction="ifRoom" />-->
+    <item android:id="@+id/menu_start"
+          android:icon="@drawable/ic_play"
+          android:showAsAction="ifRoom" />
     <item android:id="@+id/menu_about"
           android:icon="@drawable/ic_about"
+          android:showAsAction="ifRoom" />
+    <item android:id="@+id/menu_stop"
+          android:icon="@drawable/ic_stop"
           android:showAsAction="ifRoom" />
 </menu>

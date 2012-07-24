@@ -19,6 +19,8 @@ public class BrampUnitTest extends TestCase {
 	long[] shortProgression = {5, 5, 5, 10, 5, 15};
 	long[] reverseProgression = {5, 15, 5, 10, 5, 5};
 	
+	long[] shot = {60000, 10000, 1000, 10000};
+	
 	@Test
 	public void testSimpleBramp(){
 		BulbRampingShot bramp = new BulbRampingShot();

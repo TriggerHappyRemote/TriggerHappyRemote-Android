@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
-import android.widget.Button;
+import android.widget.RelativeLayout;
 
 import com.triggerhappy.android.R;
 import com.triggerhappy.android.common.BasicIntervalShot;
@@ -33,17 +33,19 @@ public class TriggerHappyAndroidActivity extends TriggerHappyNavigation{
 	    doBindService();
 	    
 	    this.initNavigation(0);
-		Button button = (Button) findViewById(R.id.intervalLength_button);
-		button.setOnTouchListener(this.OnTouchListener());
+	    RelativeLayout lyt = (RelativeLayout)findViewById(R.id.intervalLength_button);
+	    lyt.setBackgroundDrawable(getResources().getDrawable(android.R.drawable.btn_default));
+	    lyt.setOnTouchListener(OnTouchListener());
 
-		button = (Button) findViewById(R.id.shutterLength_button);
-		button.setOnTouchListener(this.OnTouchListener());
+	    lyt = (RelativeLayout)findViewById(R.id.shutterLength_button);
+	    lyt.setBackgroundDrawable(getResources().getDrawable(android.R.drawable.btn_default));
+	    lyt.setOnTouchListener(OnTouchListener());
 
-		button = (Button) findViewById(R.id.duration_button);
-		button.setOnTouchListener(this.OnTouchListener());
-
-		button = (Button) findViewById(R.id.startInterval_button);
-		button.setOnTouchListener(this.OnTouchListener());
+	    lyt = (RelativeLayout)findViewById(R.id.duration_button);
+	    lyt.setBackgroundDrawable(getResources().getDrawable(android.R.drawable.btn_default));
+	    lyt.setOnTouchListener(OnTouchListener());
+		
+		this.isRunning = false;
     }
     
 	private OnTouchListener OnTouchListener() {
@@ -96,24 +98,6 @@ public class TriggerHappyAndroidActivity extends TriggerHappyNavigation{
 							startActivityForResult(intent, DURATION);
 							break;
 						}
-						
-						case R.id.startInterval_button:
-						{
-							// Verify that we have settings for all settings
-							if (intervalSettings != null && shutterSettings != null && durationSettings != null && mIsBound || true){
-									ICameraShot shoot = new BasicIntervalShot();
-									
-									shoot.setDuration((int)durationSettings.getHour(), (int)durationSettings.getMinute(), (int)durationSettings.getSeconds(), durationSettings.getSubSeconds());
-									shoot.setInterval((int)intervalSettings.getHour(), (int)intervalSettings.getMinute(), (int)intervalSettings.getSeconds(), intervalSettings.getSubSeconds());
-									shoot.setShutterLength((int)shutterSettings.getHour(), (int)shutterSettings.getMinute(), (int)shutterSettings.getSeconds(), shutterSettings.getSubSeconds());
-									
-									mBoundService.addShot(shoot);
-									
-									mBoundService.processShots();
-									
-							}
-							
-						}
 					}
 				}
 				return false;
@@ -140,5 +124,25 @@ public class TriggerHappyAndroidActivity extends TriggerHappyNavigation{
 				renderTimeDisplay(R.id.durationLength_display, timer);
 			}
 		}
+	}
+
+	@Override
+	protected void startProcessing() {
+		// Verify that we have settings for all settings
+		if (intervalSettings != null && shutterSettings != null && durationSettings != null){
+//			this.mMode = startActionMode(new TakingPictureActionMode());
+			ICameraShot shoot = new BasicIntervalShot();
+			System.out.println("test");
+
+			shoot.setDuration((int)durationSettings.getHour(), (int)durationSettings.getMinute(), (int)durationSettings.getSeconds(), durationSettings.getSubSeconds());
+			shoot.setInterval((int)intervalSettings.getHour(), (int)intervalSettings.getMinute(), (int)intervalSettings.getSeconds(), intervalSettings.getSubSeconds());
+			shoot.setShutterLength((int)shutterSettings.getHour(), (int)shutterSettings.getMinute(), (int)shutterSettings.getSeconds(), shutterSettings.getSubSeconds());
+			
+			mBoundService.addShot(shoot);
+			
+			mBoundService.startProcessing();
+			this.isRunning = true;
+		}
+		
 	}
 }
