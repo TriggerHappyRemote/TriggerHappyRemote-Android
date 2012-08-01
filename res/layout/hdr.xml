@@ -7,7 +7,7 @@
 
     <com.triggerhappy.android.controller.HDRView
         android:id="@+id/HDR_ViewFinder"
-        android:layout_width="wrap_content"
+        android:layout_width="280dp"
         android:layout_height="171dp"
         android:src="@drawable/hdr_view_screen" />
 
@@ -20,14 +20,14 @@
 
     <Button
         android:id="@+id/hdr_num"
-        android:layout_width="281dp"
+        android:layout_width="280dp"
         android:layout_height="wrap_content"
         android:paddingBottom="10dp"
         android:text="@string/number_of_shots" />
 
     <Button
         android:id="@+id/hdr_base"
-        android:layout_width="283dp"
+        android:layout_width="280dp"
         android:layout_height="wrap_content"
         android:paddingBottom="10dp"
         android:text="@string/base_shutter" />

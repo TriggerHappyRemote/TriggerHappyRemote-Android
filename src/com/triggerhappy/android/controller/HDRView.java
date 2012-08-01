@@ -37,11 +37,11 @@ public class HDRView extends ImageView{
 	private double evInterval;
 	private String shutterLength;
 	
-	private int ll;
-	private int lr;
-	private int mid;
-	private int rl;
-	private int rr;
+	private String ll;
+	private String lr;
+	private String mid;
+	private String rl;
+	private String rr;
 	
     public HDRView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
@@ -70,12 +70,12 @@ public class HDRView extends ImageView{
         invalidate();
     }
     
-    public void setShotSeries(int _ll, int _lr, int _mid, int _rl, int _rr){
-    	this.ll = _ll;
-    	this.lr = _lr;
-    	this.mid = _mid;
-    	this.rl = _rl;
-    	this.rr = _rr;
+    public void setShotSeries(String exposureInterval, String exposureInterval2, String exposureInterval3, String exposureInterval4, String exposureInterval5){
+    	this.ll = exposureInterval;
+    	this.lr = exposureInterval2;
+    	this.mid = exposureInterval3;
+    	this.rl = exposureInterval4;
+    	this.rr = exposureInterval5;
 
     	requestLayout();
         invalidate();
@@ -92,11 +92,11 @@ public class HDRView extends ImageView{
     	this.evInterval = .33;
     	this.shutterLength = "00:00:00";
     	
-    	this.ll = 2;
-    	this.lr = 1;
-    	this.mid = 0;
-    	this.rl = 1;
-    	this.rr = 2;
+    	this.ll = "2";
+    	this.lr = "1";
+    	this.mid = "0";
+    	this.rl = "1";
+    	this.rr = "2";
 
     	boxSet0 = new Rect(25, 75, 55, 130);
         boxSet1 = new Rect(100, 75, 130, 130);

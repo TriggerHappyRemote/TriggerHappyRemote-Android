@@ -16,7 +16,6 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
-
 import com.triggerhappy.android.R;
 import com.triggerhappy.android.common.ICameraShot;
 import com.triggerhappy.android.common.IProcessorListener;
@@ -73,7 +72,8 @@ public class AudioCameraControlService extends Service implements
 		
 		this.isProcessing = false;
 
-		mMediaPlayer = MediaPlayer.create(this, R.raw.test);
+		mMediaPlayer = MediaPlayer.create(this, R.raw.ms1000);
+		mMediaPlayer.setVolume(1, 1);
 		mMediaPlayer.setLooping(true);
 	}
 
@@ -125,6 +125,7 @@ public class AudioCameraControlService extends Service implements
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void startProcessing(){
 		if(this.pendingShots.isEmpty())
 			return;

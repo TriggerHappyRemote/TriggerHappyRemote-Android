@@ -1,7 +1,13 @@
 package com.triggerhappy.android.common;
 
-public class TimerSettings {
+import java.io.Serializable;
+
+public class TimerSettings implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private long hour;
 	private long minute;
 	private long seconds;

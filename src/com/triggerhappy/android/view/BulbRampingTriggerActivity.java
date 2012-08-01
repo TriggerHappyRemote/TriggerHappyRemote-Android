@@ -66,6 +66,7 @@ public class BulbRampingTriggerActivity extends TriggerHappyNavigation{
 						{
 							Intent intent = new Intent(getBaseContext(), TimePickerTriggerHappyActivity.class);
 							intent.putExtra("Title", "Shutter Length");
+							intent.putExtra("subSecond", true);
 							if(shutterSettings != null){
 								intent.putExtra("hours", shutterSettings.getHour());
 								intent.putExtra("minutes", shutterSettings.getMinute());
@@ -79,8 +80,8 @@ public class BulbRampingTriggerActivity extends TriggerHappyNavigation{
 						case R.id.brampInterval_button:
 						{
 							Intent intent = new Intent(getBaseContext(), TimePickerTriggerHappyActivity.class);
-							intent.putExtra("subSecond", true);
 							intent.putExtra("Title", "Interval Length");
+							intent.putExtra("subSecond", true);
 							if(intervalSettings != null){
 								intent.putExtra("hours", intervalSettings.getHour());
 								intent.putExtra("minutes", intervalSettings.getMinute());
@@ -95,6 +96,7 @@ public class BulbRampingTriggerActivity extends TriggerHappyNavigation{
 						{
 							Intent intent = new Intent(getBaseContext(), TimePickerTriggerHappyActivity.class);
 							intent.putExtra("Title", "Final Shutter Length");
+							intent.putExtra("subSecond", true);
 							if(finalShutterSettings != null){
 								intent.putExtra("hours", finalShutterSettings.getHour());
 								intent.putExtra("minutes", finalShutterSettings.getMinute());
@@ -167,5 +169,32 @@ public class BulbRampingTriggerActivity extends TriggerHappyNavigation{
 				mBoundService.startProcessing();
 				
 		}
+	}
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+		
+		this.durationSettings = (TimerSettings) savedInstanceState.getSerializable("durationLength");
+		this.shutterSettings = (TimerSettings) savedInstanceState.getSerializable("shutterLength");
+		this.intervalSettings = (TimerSettings) savedInstanceState.getSerializable("intervalLength");
+		this.finalShutterSettings = (TimerSettings) savedInstanceState.getSerializable("finalShutterLength");
+		
+		if(this.intervalSettings != null)
+			renderTimeDisplay(R.id.brampInterval_display, this.intervalSettings);
+		if(this.shutterSettings != null)
+			renderTimeDisplay(R.id.brampShutter_display, this.shutterSettings);
+		if(this.durationSettings != null)
+			renderTimeDisplay(R.id.brampDuration_display, this.durationSettings);
+		if(this.finalShutterSettings != null)
+			renderTimeDisplay(R.id.brampFinalShutter_display, this.finalShutterSettings);
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		outState.putSerializable("shutterLength", shutterSettings);
+		outState.putSerializable("intervalLength", intervalSettings);
+		outState.putSerializable("finalShutterLength", finalShutterSettings);
+		outState.putSerializable("durationLength", durationSettings);
+		super.onSaveInstanceState(outState);
 	}
 }

@@ -25,11 +25,14 @@ public class TriggerHappyAndroidActivity extends TriggerHappyNavigation{
 	@Override
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
-	    setContentView(R.layout.interval);
-	    intervalSettings = null;
-	    shutterSettings = null;
-	    durationSettings = null;
-	    
+		setContentView(R.layout.interval);
+
+		if(savedInstanceState != null){
+			this.durationSettings = (TimerSettings) savedInstanceState.getSerializable("durationLength");
+			this.shutterSettings = (TimerSettings) savedInstanceState.getSerializable("shutterLength");
+			this.intervalSettings = (TimerSettings) savedInstanceState.getSerializable("intervalLength");
+		}
+    	
 	    doBindService();
 	    
 	    this.initNavigation(0);
@@ -46,6 +49,13 @@ public class TriggerHappyAndroidActivity extends TriggerHappyNavigation{
 	    lyt.setOnTouchListener(OnTouchListener());
 		
 		this.isRunning = false;
+
+		if(this.intervalSettings != null)
+			renderTimeDisplay(R.id.intervalLength_display, this.intervalSettings);
+		if(this.shutterSettings != null)
+			renderTimeDisplay(R.id.shutterLength_display, this.shutterSettings);
+		if(this.durationSettings != null)
+			renderTimeDisplay(R.id.durationLength_display, this.durationSettings);
     }
     
 	private OnTouchListener OnTouchListener() {
@@ -130,7 +140,6 @@ public class TriggerHappyAndroidActivity extends TriggerHappyNavigation{
 	protected void startProcessing() {
 		// Verify that we have settings for all settings
 		if (intervalSettings != null && shutterSettings != null && durationSettings != null){
-//			this.mMode = startActionMode(new TakingPictureActionMode());
 			ICameraShot shoot = new BasicIntervalShot();
 			System.out.println("test");
 
@@ -144,5 +153,13 @@ public class TriggerHappyAndroidActivity extends TriggerHappyNavigation{
 			this.isRunning = true;
 		}
 		
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		outState.putSerializable("shutterLength", shutterSettings);
+		outState.putSerializable("intervalLength", intervalSettings);
+		outState.putSerializable("durationLength", durationSettings);
+		super.onSaveInstanceState(outState);
 	}
 }
