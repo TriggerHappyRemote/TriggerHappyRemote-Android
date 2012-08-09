@@ -63,7 +63,7 @@ public class AudioCameraControlService extends Service implements
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		
+				
 		shotScheduler = new Timer();
 		audioManager = (AudioManager) this
 				.getSystemService(Context.AUDIO_SERVICE);
@@ -108,6 +108,14 @@ public class AudioCameraControlService extends Service implements
 
 	public void openShutter() {
 //		if (this.remoteConnected()) {
+		// Get the AudioManager
+		AudioManager audioManager =
+		(AudioManager)this.getSystemService(Context.AUDIO_SERVICE);
+		// Set the volume of played media to maximum.
+		audioManager.setStreamVolume (
+		AudioManager.STREAM_MUSIC,
+		audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC),
+		0); 
 			mMediaPlayer.start();
 //		} else {
 //			Toast.makeText(getApplicationContext(), R.string.warning, Toast.LENGTH_LONG).show();

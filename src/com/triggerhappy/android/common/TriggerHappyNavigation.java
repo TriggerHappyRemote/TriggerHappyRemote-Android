@@ -86,9 +86,11 @@ public abstract class TriggerHappyNavigation extends SherlockFragmentActivity
 			}
 	
 			case R.id.menu_start: {
-				System.out.println("Start the shot");
-				this.isRunning = true;
-				this.startProcessing();
+				if(!isRunning)
+				{
+					this.isRunning = true;
+					this.startProcessing();
+				}
 				return true;
 			}
 			
@@ -191,9 +193,9 @@ public abstract class TriggerHappyNavigation extends SherlockFragmentActivity
 
 	public void onProcessorFinish() {
 		this.isRunning = false;
-		System.out.println("Finished Running the Batch");
-		System.out.println(this.isRunning);
-		this.invalidateOptionsMenu();
+//		System.out.println("Finished Running the Batch");
+//		System.out.println(this.isRunning);
+//		this.invalidateOptionsMenu();
 	}
 
 }
