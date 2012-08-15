@@ -193,8 +193,6 @@ public abstract class TriggerHappyNavigation extends SherlockFragmentActivity
 
 	public void onProcessorFinish() {
 		this.isRunning = false;
-//		System.out.println("Finished Running the Batch");
-//		System.out.println(this.isRunning);
 //		this.invalidateOptionsMenu();
 	}
 

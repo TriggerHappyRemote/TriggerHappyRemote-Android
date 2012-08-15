@@ -6,6 +6,7 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
+import android.os.Handler;
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -27,6 +28,8 @@ public class AudioCameraControlService extends Service implements
 	private Queue<ICameraShot> pendingShots;
 	private AudioManager audioManager;
 	private boolean isProcessing;
+	private Handler mHandler = new Handler();
+	private long startTime;
 	
 	private final List<IProcessorListener> mListeners = new ArrayList<IProcessorListener>();
 
@@ -184,10 +187,7 @@ public class AudioCameraControlService extends Service implements
 			break;
 
 		case DONE:
-			stopForeground(true);
-			this.isProcessing = false;
-			closeShutter();
-			processFinished();
+			stopShots();
 			break;
 		}
 		
@@ -201,5 +201,6 @@ public class AudioCameraControlService extends Service implements
 		this.isProcessing = false;
 		shotScheduler = new Timer();
 		stopForeground(true);
+		processFinished();
 	}
 }
