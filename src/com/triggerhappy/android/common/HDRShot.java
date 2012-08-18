@@ -14,9 +14,6 @@ public class HDRShot extends ICameraShot {
 
 	private List<HDRShotInfo> shots;
 	
-	private boolean calculate;
-	
-	
 	public HDRShot(){
 		super();
 		
@@ -27,8 +24,6 @@ public class HDRShot extends ICameraShot {
 		this.numberOfShots = 3;
 		this.bulb = true;
 		this.evInterval = 1;
-		this.calculate = true;
-		
 		shots = new LinkedList<HDRShotInfo>();
 		this.calculateShots();
 	}

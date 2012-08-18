@@ -7,12 +7,14 @@ public abstract class ICameraShot {
 	protected long elapsedTime;
 	
 	private long shutterLength;
+	private long finalShutter;
 	private long intervalLength;
 	private long duration;
 	private ShotStatus currentStatus;
 	
 	public ICameraShot(){
 		this.shutterLength = 0;
+		this.finalShutter = 0;
 		this.intervalLength = 0;
 		this.duration = 0;
 		this.currentStatus = ShotStatus.INTERVAL;
@@ -50,6 +52,14 @@ public abstract class ICameraShot {
 	}
 	
 	/**
+	 * 
+	 * @return
+	 */
+	public long getFinalShutter(){
+		return this.finalShutter;
+	}
+
+	/**
 	 * Safe to call does not modify anything
 	 * 
 	 * @return
@@ -68,6 +78,25 @@ public abstract class ICameraShot {
 		return this.shutterLength;
 	}
 	
+	/**
+	 * 
+	 * @param milliseconds
+	 */
+	public void setFinalShutter(long milliseconds){
+		this.finalShutter = milliseconds;
+	}
+	
+	/**
+	 * 
+	 * @param hour
+	 * @param minute
+	 * @param second
+	 * @param millisecond
+	 */
+	public void setFinalShutter(int hour, int minute, int second, long millisecond){
+		this.finalShutter = TimeUtils.toMillisecond(hour, minute, second, millisecond);		
+	}
+
 	/**
 	 * 
 	 * @param milliseconds

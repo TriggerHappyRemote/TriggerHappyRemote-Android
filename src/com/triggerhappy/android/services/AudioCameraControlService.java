@@ -2,11 +2,6 @@ package com.triggerhappy.android.services;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Queue;
-import java.util.Timer;
-import java.util.TimerTask;
-import android.os.Handler;
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -16,32 +11,46 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Binder;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.SystemClock;
+
 import com.triggerhappy.android.R;
 import com.triggerhappy.android.common.ICameraShot;
 import com.triggerhappy.android.common.IProcessorListener;
 import com.triggerhappy.android.view.TriggerHappyAndroidActivity;
-
+/**
+ * 
+ * 
+ * Interface outline:
+ * 	@public fire
+ * 	@public stop
+ * 	@public startProcessing
+ * 	@private openShutter
+ * 	@private closeShutter
+ * 	
+ * @author Christopher Kuchin
+ *
+ */
 public class AudioCameraControlService extends Service implements
 		ICameraControl {
 	private MediaPlayer mMediaPlayer;
-	private Queue<ICameraShot> pendingShots;
+	private ICameraShot pendingShot;
 	private AudioManager audioManager;
 	private boolean isProcessing;
-	private Handler mHandler = new Handler();
-	private long startTime;
 	
+	private Handler mHandler = new Handler();
+	private long mStartTime;
+
 	private final List<IProcessorListener> mListeners = new ArrayList<IProcessorListener>();
 
-	private Timer shotScheduler;
-
 	public void registerListener(IProcessorListener listener) {
-        mListeners.add(listener);
-    }
+		mListeners.add(listener);
+	}
 
-    public void unregisterListener(IProcessorListener listener) {
-        mListeners.remove(listener);
-    }
+	public void unregisterListener(IProcessorListener listener) {
+		mListeners.remove(listener);
+	}
 
 	// Binder given to clients
 	private final IBinder mBinder = new AudioCameraBinder();
@@ -53,10 +62,10 @@ public class AudioCameraControlService extends Service implements
 	}
 
 	private void processFinished() {
-        for (int i=mListeners.size()-1; i>=0; i--) {
-            mListeners.get(i).onProcessorFinish();
-        }
-    }
+		for (int i = mListeners.size() - 1; i >= 0; i--) {
+			mListeners.get(i).onProcessorFinish();
+		}
+	}
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -66,13 +75,11 @@ public class AudioCameraControlService extends Service implements
 	@Override
 	public void onCreate() {
 		super.onCreate();
-				
-		shotScheduler = new Timer();
 		audioManager = (AudioManager) this
 				.getSystemService(Context.AUDIO_SERVICE);
 
-		this.pendingShots = new PriorityQueue<ICameraShot>();
-		
+		this.pendingShot = null;
+
 		this.isProcessing = false;
 
 		mMediaPlayer = MediaPlayer.create(this, R.raw.ms1000);
@@ -80,12 +87,12 @@ public class AudioCameraControlService extends Service implements
 		mMediaPlayer.setLooping(true);
 	}
 
-	@SuppressWarnings({ "deprecation"})
+	@SuppressWarnings({ "deprecation" })
 	public boolean remoteConnected() {
 		return audioManager.isWiredHeadsetOn();
 	}
-	
-	public boolean isRunning(){
+
+	public boolean isRunning() {
 		return isProcessing;
 	}
 
@@ -99,107 +106,88 @@ public class AudioCameraControlService extends Service implements
 
 	}
 
-	public void fireShutter(long shutterDuration) {
-		// TODO Auto-generated method stub
-
-	}
-
 	public void closeShutter() {
 		while (mMediaPlayer.isPlaying())
 			mMediaPlayer.pause();
 	}
 
 	public void openShutter() {
-//		if (this.remoteConnected()) {
-		// Get the AudioManager
-		AudioManager audioManager =
-		(AudioManager)this.getSystemService(Context.AUDIO_SERVICE);
 		// Set the volume of played media to maximum.
-		audioManager.setStreamVolume (
-		AudioManager.STREAM_MUSIC,
-		audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC),
-		0); 
-			mMediaPlayer.start();
-//		} else {
-//			Toast.makeText(getApplicationContext(), R.string.warning, Toast.LENGTH_LONG).show();
-//		}
+		this.audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,
+				audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
+		this.mMediaPlayer.start();
+		// } else {
+		// Toast.makeText(getApplicationContext(), R.string.warning,
+		// Toast.LENGTH_LONG).show();
+		// }
 	}
 
 	public void addShot(ICameraShot shot) {
-		this.pendingShots.add(shot);
+		this.pendingShot = shot;
 	}
-	
-	private class qProcessTask extends  TimerTask {
-		@Override
-		public void run() {
-			processShots();
-		}
-	}
-	
-	@SuppressWarnings("deprecation")
-	public void startProcessing(){
-		if(this.pendingShots.isEmpty())
+
+	public void startProcessing() {
+		if (this.pendingShot == null)
 			return;
-		
-		Notification note=new Notification(R.drawable.ic_launcher,
-                "Camera Timer Started",
-                System.currentTimeMillis());
-		Intent i=new Intent(this, TriggerHappyAndroidActivity.class);
-		
-		i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|
-		Intent.FLAG_ACTIVITY_SINGLE_TOP);
-		
-		PendingIntent pi=PendingIntent.getActivity(this, 0,
-		                        i, 0);
-		
-		note.setLatestEventInfo(this, "Trigger Happy Remote",
-		    "X Shots Taken",
-		    pi);
-		note.flags|=Notification.FLAG_NO_CLEAR;
-		
-		startForeground(1337, note);
 
-		this.isProcessing = true;
-		this.processShots();
-	}
-	
-	/**
-	 * This is the function that will take one or more ICamerShot Objects and
-	 * "process" them turning them into the proper combination of sound and
-	 * silence
-	 * 
-	 * 
-	 */
-	public void processShots() {
-		ICameraShot currentShot = pendingShots.peek();
-		
-		switch (currentShot.getStatus()) {
-		case SHOT:
-			openShutter();
-			shotScheduler = new Timer();
-			shotScheduler.schedule(new qProcessTask(), currentShot.getDelay());
-			break;
-
-		case INTERVAL:
-			closeShutter();
-			shotScheduler = new Timer();
-			shotScheduler.schedule(new qProcessTask(), currentShot.getDelay());
-			break;
-
-		case DONE:
-			stopShots();
-			break;
+		if (mStartTime == 0L) {
+			mStartTime = System.currentTimeMillis();
+			mHandler.removeCallbacks(mUpdateTimeTask);
+			mHandler.postDelayed(mUpdateTimeTask, 100);
+			startForeground(1337, prepareForegroundNotification());
+			this.isProcessing = true;
 		}
-		
+
+	}
+
+	private Runnable mUpdateTimeTask = new Runnable() {
+		public void run() {
+			ICameraShot currentShot = pendingShot;
+			final long start = mStartTime;
+			long millis = SystemClock.uptimeMillis() - start;
+			
+			switch (currentShot.getStatus()) {
+			case SHOT:
+				openShutter();
+				break;
+
+			case INTERVAL:
+				closeShutter();
+				break;
+
+			case DONE:
+				stopShots();
+				return;
+			}
+			mHandler.postAtTime(this, start
+					+ millis + currentShot.getDelay());
+		}
+	};
+
+	@SuppressWarnings("deprecation")
+	private Notification prepareForegroundNotification() {
+
+		Notification note = new Notification(R.drawable.ic_launcher,
+				"Camera Timer Started", System.currentTimeMillis());
+		Intent i = new Intent(this, TriggerHappyAndroidActivity.class);
+
+		i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+				| Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+		PendingIntent pi = PendingIntent.getActivity(this, 0, i, 0);
+
+		note.setLatestEventInfo(this, "Trigger Happy Remote", "X Shots Taken",
+				pi);
+		note.flags |= Notification.FLAG_NO_CLEAR;
+
+		return note;
 	}
 
 	@Override
 	public void stopShots() {
 		this.closeShutter();
-		this.shotScheduler.cancel();
-		this.pendingShots.clear();
+		this.pendingShot = null;
 		this.isProcessing = false;
-		shotScheduler = new Timer();
 		stopForeground(true);
 		processFinished();
 	}

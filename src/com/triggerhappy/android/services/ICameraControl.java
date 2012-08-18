@@ -2,17 +2,17 @@ package com.triggerhappy.android.services;
 
 import com.triggerhappy.android.common.ICameraShot;
 
-
+/**
+ * Outward facing interface for access by
+ * Activities
+ * 
+ * @author chris
+ *
+ */
 public interface ICameraControl {
-	
+		
 	/**
-	 * 
-	 * @param shutterDuration
-	 */
-	public void fireShutter(long shutterDuration);
-	
-	/**
-	 * 
+	 *
 	 */
 	public void closeShutter();
 	
@@ -26,11 +26,6 @@ public interface ICameraControl {
 	 * @param shot
 	 */
 	public void addShot(ICameraShot shot);
-	
-	/**
-	 * 
-	 */
-	public void processShots();
 	
 	/**
 	 * 

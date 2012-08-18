@@ -10,6 +10,7 @@ import android.view.View.OnTouchListener;
 import android.widget.Button;
 import com.triggerhappy.android.R;
 import com.triggerhappy.android.common.HDRShot;
+import com.triggerhappy.android.common.ICameraShot;
 import com.triggerhappy.android.common.TimerSettings;
 import com.triggerhappy.android.common.TriggerHappyNavigation;
 import com.triggerhappy.android.controller.HDRView;
@@ -176,14 +177,14 @@ public class HDRTriggerHappyActivity extends TriggerHappyNavigation {
 	protected void startProcessing() {
 		if (this.evInterval > 0 && this.noOfShots > 0
 				&& this.shutterSettings != null) {
-			HDRShot shoot = new HDRShot();
+			ICameraShot shoot = new HDRShot();
 
-			shoot.setEVInterval(this.evInterval);
+			((HDRShot)shoot).setEVInterval(this.evInterval);
 			shoot.setShutterLength((int) shutterSettings.getHour(),
 					(int) shutterSettings.getMinute(),
 					(int) shutterSettings.getSeconds(),
 					shutterSettings.getSubSeconds());
-			shoot.setNumberOfShots(noOfShots);
+			((HDRShot)shoot).setNumberOfShots(noOfShots);
 
 			mBoundService.addShot(shoot);
 

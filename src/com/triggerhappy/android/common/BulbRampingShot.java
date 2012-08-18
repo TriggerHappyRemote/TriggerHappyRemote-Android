@@ -3,7 +3,6 @@ package com.triggerhappy.android.common;
 public class BulbRampingShot extends ICameraShot{
 	private long cumulativeDelta;
 	private long stepDelta;
-	private long finalShutter;
 	private boolean stepsCalc;
 	
 	public BulbRampingShot(){
@@ -14,7 +13,6 @@ public class BulbRampingShot extends ICameraShot{
 	protected void init(){
 		this.cumulativeDelta = 0;
 		this.stepDelta = 0;
-		this.finalShutter = 0;
 		this.stepsCalc = true;
 	}
 	
@@ -36,16 +34,9 @@ public class BulbRampingShot extends ICameraShot{
 		return this.getShutterLength();
 	}
 	
-	/**
-	 * 
-	 * @return
-	 */
-	public long getFinalShutter(){
-		return this.finalShutter;
-	}
 	
 	private void calculateSteps(){
-		long avgShutter = (this.getInitialShutter() + this.finalShutter) / 2;
+		long avgShutter = (this.getInitialShutter() + this.getFinalShutter()) / 2;
 		
 		int steps = (int) ((this.getDuration() / (avgShutter + this.getInterval())));
 
@@ -59,26 +50,7 @@ public class BulbRampingShot extends ICameraShot{
 			this.cumulativeDelta = this.getInitialShutter();
 		}
 	}
-	
-	/**
-	 * 
-	 * @param milliseconds
-	 */
-	public void setFinalShutter(long milliseconds){
-		this.finalShutter = milliseconds;
-	}
-	
-	/**
-	 * 
-	 * @param hour
-	 * @param minute
-	 * @param second
-	 * @param millisecond
-	 */
-	public void setFinalShutter(int hour, int minute, int second, long millisecond){
-		this.finalShutter = TimeUtils.toMillisecond(hour, minute, second, millisecond);		
-	}
-	
+		
 	@Override
 	public long calculateShutterLength(){
 		if(stepsCalc){

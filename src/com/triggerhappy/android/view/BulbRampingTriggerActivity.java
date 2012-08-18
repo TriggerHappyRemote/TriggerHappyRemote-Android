@@ -9,6 +9,7 @@ import android.widget.RelativeLayout;
 
 import com.triggerhappy.android.R;
 import com.triggerhappy.android.common.BulbRampingShot;
+import com.triggerhappy.android.common.ICameraShot;
 import com.triggerhappy.android.common.TimerSettings;
 import com.triggerhappy.android.common.TriggerHappyNavigation;
 
@@ -157,7 +158,7 @@ public class BulbRampingTriggerActivity extends TriggerHappyNavigation{
 	protected void startProcessing() {
 		// Verify that we have settings for all settings
 		if (intervalSettings != null && shutterSettings != null && durationSettings != null && finalShutterSettings != null && mIsBound){
-				BulbRampingShot shoot = new BulbRampingShot();
+				ICameraShot shoot = new BulbRampingShot();
 				
 				shoot.setDuration((int)durationSettings.getHour(), (int)durationSettings.getMinute(), (int)durationSettings.getSeconds(), durationSettings.getSubSeconds());
 				shoot.setInterval((int)intervalSettings.getHour(), (int)intervalSettings.getMinute(), (int)intervalSettings.getSeconds(), intervalSettings.getSubSeconds());
