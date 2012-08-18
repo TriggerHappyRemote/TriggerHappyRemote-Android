@@ -168,11 +168,14 @@ public abstract class TriggerHappyNavigation extends SherlockFragmentActivity
 		String result = "";
 		boolean second = false;
 
-		result += (timer.getHour() < 10) ? "0" + timer.getHour() + ":" : timer.getHour() + ":";
-		result += (timer.getMinute() < 10) ? "0" + timer.getMinute() + ":" : timer.getMinute() + ":";
+		if(timer.getHour() > 0)
+			result += (timer.getMinute() > 0 || timer.getSeconds() > 0 || timer.getSubSeconds() > 0) ? timer.getHour() + ":" : timer.getHour();
+		
+		if(timer.getMinute() > 0)
+			result += (timer.getSeconds() > 0 || timer.getSubSeconds() > 0) ? "0" + timer.getMinute() + ":" : timer.getMinute() + ":";
 
 		if (timer.getSeconds() != 0) {
-			result += (timer.getSeconds() < 10) ? "0" + timer.getSeconds() : timer.getSeconds();
+			result += (timer.getSeconds() < 10 && (timer.getHour() > 0 || timer.getMinute() > 0)) ? "0" + timer.getSeconds() : timer.getSeconds() ;
 			second = true;
 		}
 
@@ -180,9 +183,12 @@ public abstract class TriggerHappyNavigation extends SherlockFragmentActivity
 			result += " " + timer.getSubSecondString();
 			second = true;
 		}
+		
+		if(timer.getSubSeconds() > 0 || timer.getSeconds() > 0)
+			result += " s";
 
 		if (!second)
-			result += 0;
+			result += 00;
 
 		result += " >";
 
