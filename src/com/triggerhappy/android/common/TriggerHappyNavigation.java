@@ -193,6 +193,7 @@ public abstract class TriggerHappyNavigation extends SherlockFragmentActivity
 
 	public void onProcessorFinish() {
 		this.isRunning = false;
+		System.out.println("running not anymore");
 //		this.invalidateOptionsMenu();
 	}
 

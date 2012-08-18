@@ -151,7 +151,8 @@ public class TriggerHappyAndroidActivity extends TriggerHappyNavigation{
 			
 			mBoundService.startProcessing();
 			this.isRunning = true;
-		}
+		}else
+			System.out.println("Didn't get in the loop");
 		
 	}
 

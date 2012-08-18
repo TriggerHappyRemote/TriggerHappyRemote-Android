@@ -45,6 +45,7 @@ public class AudioCameraControlService extends Service implements
 	private final List<IProcessorListener> mListeners = new ArrayList<IProcessorListener>();
 
 	public void registerListener(IProcessorListener listener) {
+		System.out.println("listeners added");
 		mListeners.add(listener);
 	}
 
@@ -63,6 +64,7 @@ public class AudioCameraControlService extends Service implements
 
 	private void processFinished() {
 		for (int i = mListeners.size() - 1; i >= 0; i--) {
+			System.out.println(i);
 			mListeners.get(i).onProcessorFinish();
 		}
 	}
@@ -129,6 +131,8 @@ public class AudioCameraControlService extends Service implements
 	public void startProcessing() {
 		if (this.pendingShot == null)
 			return;
+		
+		System.out.println();
 
 		if (mStartTime == 0L) {
 			mStartTime = System.currentTimeMillis();
@@ -190,5 +194,6 @@ public class AudioCameraControlService extends Service implements
 		this.isProcessing = false;
 		stopForeground(true);
 		processFinished();
+		this.mStartTime = 0L;
 	}
 }
