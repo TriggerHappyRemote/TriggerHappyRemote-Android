@@ -132,8 +132,6 @@ public class AudioCameraControlService extends Service implements
 		if (this.pendingShot == null)
 			return;
 		
-		System.out.println();
-
 		if (mStartTime == 0L) {
 			mStartTime = System.currentTimeMillis();
 			mHandler.removeCallbacks(mUpdateTimeTask);
@@ -146,6 +144,9 @@ public class AudioCameraControlService extends Service implements
 
 	private Runnable mUpdateTimeTask = new Runnable() {
 		public void run() {
+			if(pendingShot == null)
+				return;
+			
 			ICameraShot currentShot = pendingShot;
 			final long start = mStartTime;
 			long millis = SystemClock.uptimeMillis() - start;
@@ -189,6 +190,7 @@ public class AudioCameraControlService extends Service implements
 
 	@Override
 	public void stopShots() {
+		mHandler.removeCallbacks(mUpdateTimeTask);
 		this.closeShutter();
 		this.pendingShot = null;
 		this.isProcessing = false;
