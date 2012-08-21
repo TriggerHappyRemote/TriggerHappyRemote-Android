@@ -14,23 +14,26 @@ import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
+import android.widget.Toast;
 
 import com.triggerhappy.android.R;
 import com.triggerhappy.android.common.ICameraShot;
 import com.triggerhappy.android.common.IProcessorListener;
 import com.triggerhappy.android.view.TriggerHappyAndroidActivity;
+
 /**
  * 
  * 
  * Interface outline:
- * 	@public fire
- * 	@public stop
- * 	@public startProcessing
- * 	@private openShutter
- * 	@private closeShutter
- * 	
+ * 
+ * @public fire
+ * @public stop
+ * @public startProcessing
+ * @private openShutter
+ * @private closeShutter
+ * 
  * @author Christopher Kuchin
- *
+ * 
  */
 public class AudioCameraControlService extends Service implements
 		ICameraControl {
@@ -38,7 +41,7 @@ public class AudioCameraControlService extends Service implements
 	private ICameraShot pendingShot;
 	private AudioManager audioManager;
 	private boolean isProcessing;
-	
+
 	private Handler mHandler = new Handler();
 	private long mStartTime;
 
@@ -113,15 +116,20 @@ public class AudioCameraControlService extends Service implements
 			mMediaPlayer.pause();
 	}
 
-	public void openShutter() {
-		// Set the volume of played media to maximum.
+	private void _openShutter() {
 		this.audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,
 				audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
 		this.mMediaPlayer.start();
-		// } else {
-		// Toast.makeText(getApplicationContext(), R.string.warning,
-		// Toast.LENGTH_LONG).show();
-		// }
+	}
+
+	public void openShutter() {
+		// Set the volume of played media to maximum.
+		if (this.remoteConnected()) {
+			_openShutter();
+		} else {
+			Toast.makeText(getApplicationContext(), R.string.warning,
+					Toast.LENGTH_LONG).show();
+		}
 	}
 
 	public void addShot(ICameraShot shot) {
@@ -131,29 +139,34 @@ public class AudioCameraControlService extends Service implements
 	public void startProcessing() {
 		if (this.pendingShot == null)
 			return;
-		
-		if (mStartTime == 0L) {
-			mStartTime = System.currentTimeMillis();
-			mHandler.removeCallbacks(mUpdateTimeTask);
-			mHandler.postDelayed(mUpdateTimeTask, 100);
-			startForeground(1337, prepareForegroundNotification());
-			this.isProcessing = true;
+
+		if (this.remoteConnected()) {
+			if (mStartTime == 0L) {
+				mStartTime = System.currentTimeMillis();
+				mHandler.removeCallbacks(mUpdateTimeTask);
+				mHandler.postDelayed(mUpdateTimeTask, 100);
+				startForeground(1337, prepareForegroundNotification());
+				this.isProcessing = true;
+			}
+		} else {
+			Toast.makeText(getApplicationContext(), R.string.warning,
+					Toast.LENGTH_LONG).show();
 		}
 
 	}
 
 	private Runnable mUpdateTimeTask = new Runnable() {
 		public void run() {
-			if(pendingShot == null)
+			if (pendingShot == null)
 				return;
-			
+
 			ICameraShot currentShot = pendingShot;
 			final long start = mStartTime;
 			long millis = SystemClock.uptimeMillis() - start;
-			
+
 			switch (currentShot.getStatus()) {
 			case SHOT:
-				openShutter();
+				_openShutter();
 				break;
 
 			case INTERVAL:
@@ -164,8 +177,7 @@ public class AudioCameraControlService extends Service implements
 				stopShots();
 				return;
 			}
-			mHandler.postAtTime(this, start
-					+ millis + currentShot.getDelay());
+			mHandler.postAtTime(this, start + millis + currentShot.getDelay());
 		}
 	};
 
