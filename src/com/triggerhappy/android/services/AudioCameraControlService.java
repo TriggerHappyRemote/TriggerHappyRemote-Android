@@ -140,7 +140,7 @@ public class AudioCameraControlService extends Service implements
 		if (this.pendingShot == null)
 			return;
 
-		if (this.remoteConnected()) {
+//		if (this.remoteConnected()) {
 			if (mStartTime == 0L) {
 				mStartTime = System.currentTimeMillis();
 				mHandler.removeCallbacks(mUpdateTimeTask);
@@ -148,10 +148,10 @@ public class AudioCameraControlService extends Service implements
 				startForeground(1337, prepareForegroundNotification());
 				this.isProcessing = true;
 			}
-		} else {
-			Toast.makeText(getApplicationContext(), R.string.warning,
-					Toast.LENGTH_LONG).show();
-		}
+//		} else {
+//			Toast.makeText(getApplicationContext(), R.string.warning,
+//					Toast.LENGTH_LONG).show();
+//		}
 
 	}
 

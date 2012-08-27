@@ -1,7 +1,14 @@
 package com.triggerhappy.android.common;
 
-public abstract class ICameraShot {
+import java.io.Serializable;
+
+public abstract class ICameraShot implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public enum ShotStatus {DONE, INTERVAL, SHOT};
 	
 	protected long elapsedTime;

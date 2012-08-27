@@ -36,8 +36,6 @@ public class BulbRampingTriggerActivity extends TriggerHappyNavigation{
 
         this.initNavigation(1);
         
-	    doBindService();
-	    
 	    RelativeLayout lyt = (RelativeLayout)findViewById(R.id.brampDuration_button);
 	    lyt.setBackgroundDrawable(getResources().getDrawable(android.R.drawable.btn_default));
 	    lyt.setOnTouchListener(OnTouchListener());
@@ -157,7 +155,7 @@ public class BulbRampingTriggerActivity extends TriggerHappyNavigation{
 	@Override
 	protected void startProcessing() {
 		// Verify that we have settings for all settings
-		if (intervalSettings != null && shutterSettings != null && durationSettings != null && finalShutterSettings != null && mIsBound){
+		if (intervalSettings != null && shutterSettings != null && durationSettings != null && finalShutterSettings != null){
 				ICameraShot shoot = new BulbRampingShot();
 				
 				shoot.setDuration((int)durationSettings.getHour(), (int)durationSettings.getMinute(), (int)durationSettings.getSeconds(), durationSettings.getSubSeconds());
@@ -165,10 +163,13 @@ public class BulbRampingTriggerActivity extends TriggerHappyNavigation{
 				shoot.setShutterLength((int)shutterSettings.getHour(), (int)shutterSettings.getMinute(), (int)shutterSettings.getSeconds(), shutterSettings.getSubSeconds());
 				shoot.setFinalShutter((int)finalShutterSettings.getHour(), (int)finalShutterSettings.getMinute(), (int)finalShutterSettings.getSeconds(), finalShutterSettings.getSubSeconds());
 				
-				mBoundService.addShot(shoot);
+				Bundle bndl = new Bundle();
+				bndl.putSerializable("Shot", shoot);
+				Intent intent = new Intent(getBaseContext(), ShotStatusActivity.class);
 				
-				mBoundService.startProcessing();
-				
+				intent.putExtras(bndl);
+
+				startActivity(intent);
 		}
 	}
 	@Override

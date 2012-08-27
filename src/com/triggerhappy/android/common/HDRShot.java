@@ -6,6 +6,10 @@ import java.util.List;
 
 
 public class HDRShot extends ICameraShot {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	@SuppressWarnings("unused")
 	private boolean bulb;
 	private double evInterval;

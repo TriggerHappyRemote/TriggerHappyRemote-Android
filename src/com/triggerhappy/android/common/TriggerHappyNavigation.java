@@ -1,11 +1,8 @@
 package com.triggerhappy.android.common;
 
 import android.app.ActionBar;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
-import android.os.IBinder;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,7 +13,6 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.triggerhappy.android.R;
-import com.triggerhappy.android.services.AudioCameraControlService;
 import com.triggerhappy.android.view.AboutTriggerHappyActvity;
 import com.triggerhappy.android.view.BasicTriggerActivity;
 import com.triggerhappy.android.view.BulbRampingTriggerActivity;
@@ -24,45 +20,9 @@ import com.triggerhappy.android.view.HDRTriggerHappyActivity;
 import com.triggerhappy.android.view.TriggerHappyAndroidActivity;
 
 public abstract class TriggerHappyNavigation extends SherlockFragmentActivity
-		implements OnNavigationListener, IProcessorListener {
+		implements OnNavigationListener {
 	private boolean setNavigation;
 	protected static final int TIME_SELECTOR = 0;
-	protected AudioCameraControlService mBoundService;
-
-	protected boolean mIsBound;
-	
-	protected boolean isRunning;
-
-	protected ServiceConnection mConnection = new ServiceConnection() {
-		public void onServiceConnected(ComponentName className, IBinder service) {
-			mBoundService = ((AudioCameraControlService.AudioCameraBinder) service)
-					.getService();
-			mBoundService.registerListener(TriggerHappyNavigation.this);
-			mIsBound = true;
-		}
-
-		public void onServiceDisconnected(ComponentName className) {
-			mBoundService = null;
-		}
-	};
-
-	protected void doBindService() {
-		getApplicationContext().bindService(
-				new Intent(this, AudioCameraControlService.class), mConnection,
-				Context.BIND_AUTO_CREATE);
-	}
-
-	protected void doUnbindService() {
-		if (mIsBound) {
-			// Detach our existing connection.
-			getApplicationContext().unbindService(mConnection);
-			mIsBound = false;
-		}
-	}
-
-	public boolean onPrepareOptionsMenu(Menu menu) {
-		 return true;
-	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -86,17 +46,11 @@ public abstract class TriggerHappyNavigation extends SherlockFragmentActivity
 			}
 	
 			case R.id.menu_start: {
-				if(!isRunning)
-				{
-					this.isRunning = true;
-					this.startProcessing();
-				}
+				this.startProcessing();
 				return true;
 			}
 			
 			case R.id.menu_stop: {
-				this.isRunning = false;
-				mBoundService.stopShots();
 				return true;
 			}
 		}
@@ -196,11 +150,4 @@ public abstract class TriggerHappyNavigation extends SherlockFragmentActivity
 	}
 
 	abstract protected void startProcessing();
-
-	public void onProcessorFinish() {
-		this.isRunning = false;
-		System.out.println("running not anymore");
-//		this.invalidateOptionsMenu();
-	}
-
 }

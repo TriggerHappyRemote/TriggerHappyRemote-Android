@@ -213,5 +213,5 @@ public class TimePickerTriggerHappyActivity extends TriggerHappyNavigation {
 	protected void startProcessing() {
 		// TODO Auto-generated method stub
 		
-	};
+	}
 }

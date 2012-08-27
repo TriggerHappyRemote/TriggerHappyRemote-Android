@@ -1,6 +1,10 @@
 package com.triggerhappy.android.common;
 
 public class BulbRampingShot extends ICameraShot{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private long cumulativeDelta;
 	private long stepDelta;
 	private boolean stepsCalc;

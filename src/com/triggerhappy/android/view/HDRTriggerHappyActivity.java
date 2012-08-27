@@ -33,8 +33,6 @@ public class HDRTriggerHappyActivity extends TriggerHappyNavigation {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.hdr);
 
-		doBindService();
-
 		this.initNavigation(2);
 
 		this.evInterval = 2;
@@ -186,9 +184,13 @@ public class HDRTriggerHappyActivity extends TriggerHappyNavigation {
 					shutterSettings.getSubSeconds());
 			((HDRShot)shoot).setNumberOfShots(noOfShots);
 
-			mBoundService.addShot(shoot);
+			Bundle bndl = new Bundle();
+			bndl.putSerializable("Shot", shoot);
+			Intent intent = new Intent(getBaseContext(), ShotStatusActivity.class);
+			
+			intent.putExtras(bndl);
 
-			mBoundService.startProcessing();
+			startActivity(intent);
 		}
 	}
 

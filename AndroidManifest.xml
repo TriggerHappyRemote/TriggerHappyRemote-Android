@@ -41,6 +41,7 @@
             android:name=".view.TimePickerTriggerHappyActivity"
             android:theme="@style/Theme.Sherlock.Dialog" >
         </activity>
+        <activity android:name=".view.ShotStatusActivity"></activity>
     </application>
 
 </manifest>

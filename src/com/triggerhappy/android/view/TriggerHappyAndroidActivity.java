@@ -33,8 +33,6 @@ public class TriggerHappyAndroidActivity extends TriggerHappyNavigation{
 			this.intervalSettings = (TimerSettings) savedInstanceState.getSerializable("intervalLength");
 		}
     	
-	    doBindService();
-	    
 	    this.initNavigation(0);
 	    RelativeLayout lyt = (RelativeLayout)findViewById(R.id.intervalLength_button);
 	    lyt.setBackgroundDrawable(getResources().getDrawable(android.R.drawable.btn_default));
@@ -48,8 +46,6 @@ public class TriggerHappyAndroidActivity extends TriggerHappyNavigation{
 	    lyt.setBackgroundDrawable(getResources().getDrawable(android.R.drawable.btn_default));
 	    lyt.setOnTouchListener(OnTouchListener());
 		
-		this.isRunning = false;
-
 		if(this.intervalSettings != null)
 			renderTimeDisplay(R.id.intervalLength_display, this.intervalSettings);
 		if(this.shutterSettings != null)
@@ -141,16 +137,19 @@ public class TriggerHappyAndroidActivity extends TriggerHappyNavigation{
 		// Verify that we have settings for all settings
 		if (intervalSettings != null && shutterSettings != null && durationSettings != null){
 			ICameraShot shoot = new BasicIntervalShot();
-			System.out.println("test");
 
 			shoot.setDuration((int)durationSettings.getHour(), (int)durationSettings.getMinute(), (int)durationSettings.getSeconds(), durationSettings.getSubSeconds());
 			shoot.setInterval((int)intervalSettings.getHour(), (int)intervalSettings.getMinute(), (int)intervalSettings.getSeconds(), intervalSettings.getSubSeconds());
 			shoot.setShutterLength((int)shutterSettings.getHour(), (int)shutterSettings.getMinute(), (int)shutterSettings.getSeconds(), shutterSettings.getSubSeconds());
 			
-			mBoundService.addShot(shoot);
 			
-			mBoundService.startProcessing();
-			this.isRunning = true;
+			Bundle bndl = new Bundle();
+			bndl.putSerializable("Shot", shoot);
+			Intent intent = new Intent(getBaseContext(), ShotStatusActivity.class);
+			
+			intent.putExtras(bndl);
+
+			startActivity(intent);
 		}else
 			System.out.println("Didn't get in the loop");
 		
