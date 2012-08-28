@@ -11,9 +11,9 @@ import com.triggerhappy.android.R;
 import com.triggerhappy.android.common.BasicIntervalShot;
 import com.triggerhappy.android.common.ICameraShot;
 import com.triggerhappy.android.common.TimerSettings;
-import com.triggerhappy.android.common.TriggerHappyNavigation;
+import com.triggerhappy.android.common.TriggerHappyNavigationShots;
 
-public class TriggerHappyAndroidActivity extends TriggerHappyNavigation{
+public class TriggerHappyAndroidActivity extends TriggerHappyNavigationShots{
 	final private int SHUTTER_LENGTH = 0;
 	final private int INTERVAL_LENGTH = 1;
 	final private int DURATION = 2;

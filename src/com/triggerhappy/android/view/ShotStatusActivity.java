@@ -10,6 +10,9 @@ import android.os.IBinder;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.triggerhappy.android.R;
 import com.triggerhappy.android.common.ICameraShot;
 import com.triggerhappy.android.common.IProcessorListener;
@@ -21,6 +24,31 @@ public class ShotStatusActivity extends SherlockFragmentActivity implements
 	protected boolean mIsBound;
 	protected TextView mTimer;
 	protected ICameraShot nextShot = null;
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+
+		MenuInflater inflater = getSupportMenuInflater();
+		inflater.inflate(R.menu.status_nav, menu);
+		return true;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case R.id.menu_stop: {
+				mBoundService.stopShots();
+				finish();
+				return true;
+			}
+		}
+		return false;
+	}
+
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -35,10 +63,6 @@ public class ShotStatusActivity extends SherlockFragmentActivity implements
 				nextShot = (ICameraShot) intent.getExtras().get("Shot");
 			}
 		}
-		
-		
-		// initially we need to wait til the activity binds to the service
-
 		
 		mTimer = (TextView) findViewById(R.id.StatusCountDown);
 	}

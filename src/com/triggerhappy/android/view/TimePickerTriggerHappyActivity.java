@@ -208,10 +208,4 @@ public class TimePickerTriggerHappyActivity extends TriggerHappyNavigation {
 			}
 		};
 	}
-
-	@Override
-	protected void startProcessing() {
-		// TODO Auto-generated method stub
-		
-	}
 }

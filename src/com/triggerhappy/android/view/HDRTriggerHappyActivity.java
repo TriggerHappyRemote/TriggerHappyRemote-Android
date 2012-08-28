@@ -12,10 +12,10 @@ import com.triggerhappy.android.R;
 import com.triggerhappy.android.common.HDRShot;
 import com.triggerhappy.android.common.ICameraShot;
 import com.triggerhappy.android.common.TimerSettings;
-import com.triggerhappy.android.common.TriggerHappyNavigation;
+import com.triggerhappy.android.common.TriggerHappyNavigationShots;
 import com.triggerhappy.android.controller.HDRView;
 
-public class HDRTriggerHappyActivity extends TriggerHappyNavigation {
+public class HDRTriggerHappyActivity extends TriggerHappyNavigationShots {
 	private TimerSettings shutterSettings;
 	private double evInterval;
 	private int noOfShots;

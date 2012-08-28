@@ -11,9 +11,7 @@ import com.actionbarsherlock.app.ActionBar.OnNavigationListener;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.triggerhappy.android.R;
-import com.triggerhappy.android.view.AboutTriggerHappyActvity;
 import com.triggerhappy.android.view.BasicTriggerActivity;
 import com.triggerhappy.android.view.BulbRampingTriggerActivity;
 import com.triggerhappy.android.view.HDRTriggerHappyActivity;
@@ -32,30 +30,6 @@ public abstract class TriggerHappyNavigation extends SherlockFragmentActivity
 		return true;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-			case R.id.menu_about: {
-				Intent intent = new Intent(this, AboutTriggerHappyActvity.class);
-				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				startActivity(intent);
-				return true;
-			}
-	
-			case R.id.menu_start: {
-				this.startProcessing();
-				return true;
-			}
-			
-			case R.id.menu_stop: {
-				return true;
-			}
-		}
-		return false;
-	}
 
 	/**
 	 * Function to initialize the drop down navigation menu
@@ -148,6 +122,4 @@ public abstract class TriggerHappyNavigation extends SherlockFragmentActivity
 
 		v.setText(result);
 	}
-
-	abstract protected void startProcessing();
 }
