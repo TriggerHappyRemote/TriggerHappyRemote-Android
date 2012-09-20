@@ -11,16 +11,20 @@ import com.actionbarsherlock.app.ActionBar.OnNavigationListener;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.triggerhappy.android.R;
 import com.triggerhappy.android.view.BasicTriggerActivity;
 import com.triggerhappy.android.view.BulbRampingTriggerActivity;
 import com.triggerhappy.android.view.HDRTriggerHappyActivity;
 import com.triggerhappy.android.view.TriggerHappyAndroidActivity;
+import com.triggerhappy.android.R;
 
 public abstract class TriggerHappyNavigation extends SherlockFragmentActivity
 		implements OnNavigationListener {
 	private boolean setNavigation;
 	protected static final int TIME_SELECTOR = 0;
+	public static final int HOUR = 3600000;
+	public static final int MINUTE = 60000;
+	public static final int SECOND = 1000;
+	public static final int TENTH = 100;
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

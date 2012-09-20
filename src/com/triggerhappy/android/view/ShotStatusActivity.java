@@ -16,9 +16,10 @@ import com.actionbarsherlock.view.MenuItem;
 import com.triggerhappy.android.R;
 import com.triggerhappy.android.common.ICameraShot;
 import com.triggerhappy.android.common.IProcessorListener;
+import com.triggerhappy.android.common.TriggerHappyNavigation;
 import com.triggerhappy.android.services.AudioCameraControlService;
 
-public class ShotStatusActivity extends SherlockFragmentActivity implements
+public class ShotStatusActivity extends TriggerHappyNavigation implements
 		IProcessorListener {
 	protected AudioCameraControlService mBoundService;
 	protected boolean mIsBound;
@@ -30,6 +31,7 @@ public class ShotStatusActivity extends SherlockFragmentActivity implements
 
 		MenuInflater inflater = getSupportMenuInflater();
 		inflater.inflate(R.menu.status_nav, menu);
+		
 		return true;
 	}
 	
@@ -85,11 +87,10 @@ public class ShotStatusActivity extends SherlockFragmentActivity implements
 			finish();
 			
 
-		new CountDownTimer(nextShot.getDuration(), 1000) {
+		new CountDownTimer(nextShot.getDuration(), 100) {
 
 			public void onTick(long millisUntilFinished) {
-				mTimer.setText("seconds remaining: " + millisUntilFinished
-						/ 1000);
+				renderTimer(millisUntilFinished);
 			}
 
 			public void onFinish() {
@@ -128,4 +129,41 @@ public class ShotStatusActivity extends SherlockFragmentActivity implements
 		}
 	}
 
+	private void renderTimer(long timeRemaining){
+		String hour = "00";
+		String min = "00";
+		String sec = "00";
+		String tenth = "0";
+		int tmp = 0;
+		
+		if (timeRemaining > HOUR){
+			tmp = (int) (timeRemaining / HOUR);
+			hour = (tmp > 10) ? tmp + "" : "0" + tmp;
+			
+			timeRemaining %= HOUR;
+		}
+		
+		if (timeRemaining > MINUTE){
+			tmp = (int) (timeRemaining / MINUTE);
+			min = (tmp > 10) ? tmp + "" : "0" + tmp;
+			
+			timeRemaining %= MINUTE;
+		}
+		
+		if (timeRemaining > SECOND){
+			tmp = (int) (timeRemaining / SECOND);
+			sec = (tmp > 10) ? tmp + "" : "0" + tmp;
+			
+			timeRemaining %= SECOND;
+		}
+		
+		if(timeRemaining > TENTH){
+			tmp = (int) (timeRemaining / TENTH);
+			tenth = tmp + "";
+			
+			timeRemaining %= TENTH;
+		}
+		
+		mTimer.setText(hour + ":" + min + ":" + sec + "." + tenth);
+	}
 }
