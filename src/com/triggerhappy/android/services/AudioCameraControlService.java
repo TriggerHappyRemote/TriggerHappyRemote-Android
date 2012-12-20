@@ -6,8 +6,10 @@ import java.util.List;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Binder;
@@ -46,9 +48,8 @@ public class AudioCameraControlService extends Service implements
 	private long mStartTime;
 
 	private final List<IProcessorListener> mListeners = new ArrayList<IProcessorListener>();
-
+	
 	public void registerListener(IProcessorListener listener) {
-		System.out.println("listeners added");
 		mListeners.add(listener);
 	}
 
@@ -79,6 +80,7 @@ public class AudioCameraControlService extends Service implements
 
 	@Override
 	public void onCreate() {
+		this.registerReceiver(mBroadCastReceiver, new IntentFilter(Intent.ACTION_HEADSET_PLUG));
 		super.onCreate();
 		audioManager = (AudioManager) this
 				.getSystemService(Context.AUDIO_SERVICE);
@@ -124,12 +126,12 @@ public class AudioCameraControlService extends Service implements
 
 	public void openShutter() {
 		// Set the volume of played media to maximum.
-		if (this.remoteConnected()) {
+//		if (this.remoteConnected()) {
 			_openShutter();
-		} else {
-			Toast.makeText(getApplicationContext(), R.string.warning,
-					Toast.LENGTH_LONG).show();
-		}
+//		} else {
+//			Toast.makeText(getApplicationContext(), R.string.warning,
+//					Toast.LENGTH_LONG).show();
+//		}
 	}
 
 	public void addShot(ICameraShot shot) {
@@ -210,4 +212,31 @@ public class AudioCameraControlService extends Service implements
 		processFinished();
 		this.mStartTime = 0L;
 	}
+
+
+
+	protected BroadcastReceiver mBroadCastReceiver = new BroadcastReceiver()
+    {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            // TODO Auto-generated method stub
+            String action = intent.getAction();
+            if( (action.compareTo(Intent.ACTION_HEADSET_PLUG))  == 0){
+                int headSetState = intent.getIntExtra("state", 0);      //get the headset state property
+                int hasMicrophone = intent.getIntExtra("microphone", 0);//get the headset microphone property
+                if( (headSetState == 0) && (hasMicrophone == 0)){
+                               //do whatever
+                }
+            }           
+
+        }
+    };
+
+
 }
+
+
+
+

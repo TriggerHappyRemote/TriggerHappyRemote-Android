@@ -1,6 +1,12 @@
 package com.triggerhappy.android.common;
 
-public class HDRShotInfo {
+import java.io.Serializable;
+
+public class HDRShotInfo implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private long shutter;
 
 	public HDRShotInfo(long shutterLength){

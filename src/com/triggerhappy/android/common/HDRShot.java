@@ -10,8 +10,6 @@ public class HDRShot extends ICameraShot {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	@SuppressWarnings("unused")
-	private boolean bulb;
 	private double evInterval;
 	
 	private int numberOfShots;
@@ -26,7 +24,6 @@ public class HDRShot extends ICameraShot {
 	
 	private void init(){
 		this.numberOfShots = 3;
-		this.bulb = true;
 		this.evInterval = 1;
 		shots = new LinkedList<HDRShotInfo>();
 		this.calculateShots();
