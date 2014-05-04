@@ -1,4 +1,4 @@
-Trigger Happy Remote app seen in the iOS app store for iPhone, iPad, and iPod touch. Seen here: https://play.google.com/store/apps/details?id=com.triggerhappy.android
+Trigger Happy Remote app seen in the Google Play for Android. Seen here: https://play.google.com/store/apps/details?id=com.triggerhappy.android
 
 A huge thanks to all the 2011-2014 Trigger Happy, LLC team including Brett Gottula, Luke Duffield, Chris Kuchin, Todd Mathews, Jenae Mathews, Melissa Gottula, Justin Gottula, Mike Wheeler, and Kevin Harrington.
 
